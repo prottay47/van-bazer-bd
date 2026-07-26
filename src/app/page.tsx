@@ -217,7 +217,7 @@ export default function RiktooStyleLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#3b0764] text-white font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
+    <div className="min-h-screen bg-white text-gray-900 font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
       {/* Top Banner Notice */}
       <div className="bg-[#581c87] text-white text-center py-2 px-4 text-sm md:text-base font-bold flex items-center justify-center gap-2 border-b border-purple-800">
         <Sparkles className="w-5 h-5 text-amber-300 animate-spin" />
