@@ -95,16 +95,43 @@ export default function RiktooStyleLandingPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [orderSuccess, setOrderSuccess] = useState<any>(null);
 
-  // Timer simulation
-  const [timeLeft, setTimeLeft] = useState({ minutes: 5, seconds: 42 });
+  // 3-day countdown timer (resets every 3 days, persists via localStorage)
+  const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+  const getOrSetStartTime = () => {
+    if (typeof window === 'undefined') return Date.now();
+    const stored = localStorage.getItem('vb_offer_start');
+    const now = Date.now();
+    if (!stored) {
+      localStorage.setItem('vb_offer_start', String(now));
+      return now;
+    }
+    const start = Number(stored);
+    const elapsed = now - start;
+    if (elapsed >= THREE_DAYS_MS) {
+      localStorage.setItem('vb_offer_start', String(now));
+      return now;
+    }
+    return start;
+  };
+
+  const calcTimeLeft = () => {
+    const start = getOrSetStartTime();
+    const elapsed = Date.now() - start;
+    let remaining = THREE_DAYS_MS - elapsed;
+    if (remaining < 0) remaining = 0;
+    const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
+    const hours = Math.floor((remaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    const minutes = Math.floor((remaining % (60 * 60 * 1000)) / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    return { days, hours, minutes, seconds };
+  };
+
+  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 23, minutes: 59, seconds: 59 });
 
   useEffect(() => {
+    setTimeLeft(calcTimeLeft());
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { minutes: prev.minutes - 1, seconds: 59 };
-        return { minutes: 15, seconds: 0 };
-      });
+      setTimeLeft(calcTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -219,9 +246,14 @@ export default function RiktooStyleLandingPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
       {/* Top Banner Notice */}
-      <div className="bg-[#581c87] text-white text-center py-2 px-4 text-sm md:text-base font-bold flex items-center justify-center gap-2 border-b border-purple-800">
-        <Sparkles className="w-5 h-5 text-amber-300 animate-spin" />
-        <span>স্পেশাল অফার – মাত্র ২৫০ টাকা! 🔥 অফারটি শেষ হতে বাকি {String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')} মিনিট</span>
+      <div className="bg-[#581c87] text-white text-center py-2.5 px-4 border-b border-purple-800">
+        <div className="flex items-center justify-center gap-2 text-base md:text-lg font-bold">
+          <Sparkles className="w-5 h-5 text-amber-300 animate-spin shrink-0" />
+          <span>🔥 স্পেশাল অফার – মাত্র ২৫০ টাকা!</span>
+        </div>
+        <div className="text-amber-300 font-extrabold text-base md:text-lg mt-0.5">
+          অফারটি শেষ হতে বাকি: {timeLeft.days} দিন, {String(timeLeft.hours).padStart(2, '0')} ঘণ্টা, {String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')} মিনিট
+        </div>
       </div>
 
       <div className="max-w-xl mx-auto px-3 py-4 space-y-6">
