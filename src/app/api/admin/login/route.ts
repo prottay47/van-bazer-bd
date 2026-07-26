@@ -3,12 +3,13 @@ import { signAdminToken } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const { password } = await req.json();
+    const { username, password } = await req.json();
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin1234';
 
-    if (password !== adminPassword) {
+    if (username !== adminUsername || password !== adminPassword) {
       return NextResponse.json(
-        { error: 'ভুল এডমিন পাসওয়ার্ড!' },
+        { error: 'ভুল এডমিন ইউজারনেম বা পাসওয়ার্ড!' },
         { status: 401 }
       );
     }
