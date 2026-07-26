@@ -31,7 +31,8 @@ RUN adduser --system --uid 1001 nextjs
 # Create db directory and public folder
 RUN mkdir -p /app/data /app/public && chown -R nextjs:nodejs /app/data /app/public
 
-# Copy public folder if it exists, otherwise skip
+# Copy public folder and standalone files
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 

@@ -42,11 +42,22 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6">
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center mx-auto border border-rose-500/20">
-            <Lock className="w-6 h-6" />
+        <div className="text-center space-y-3">
+          {/* Circular Logo */}
+          <div className="w-24 h-24 rounded-full border-4 border-emerald-500/40 p-1 bg-white mx-auto shadow-xl flex items-center justify-center overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="Van Bazer BD Logo"
+              className="w-full h-full object-contain rounded-full"
+            />
           </div>
-          <h1 className="text-2xl font-bold text-white">অ্যাডমিন ড্যাশবোর্ড লগইন</h1>
+          <div>
+            <h1 className="text-2xl font-black tracking-wide text-white uppercase bg-gradient-to-r from-orange-400 via-rose-400 to-emerald-400 bg-clip-text text-transparent">
+              VAN BAZER BD
+            </h1>
+            <p className="text-sm font-semibold text-slate-300 mt-1">অ্যাডমিন ড্যাশবোর্ড লগইন</p>
+          </div>
           <p className="text-xs text-slate-400">অর্ডার ম্যানেজমেন্টে এক্সেস পেতে ইউজার আইডি ও পাসওয়ার্ড দিন</p>
         </div>
 

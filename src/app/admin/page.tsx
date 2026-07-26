@@ -163,8 +163,11 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
-            <PackageCheck className="w-8 h-8 text-rose-500" />
+          <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full border-2 border-emerald-500/50 p-0.5 bg-white flex items-center justify-center shrink-0 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Van Bazer BD Logo" className="w-full h-full object-contain rounded-full" />
+            </div>
             <span>Van Bazer BD Order Dashboard</span>
           </h1>
           <p className="text-xs text-slate-400">কাস্টমার অর্ডার ও সেলস স্ট্যাটিস্টিক্স একনজরে</p>
