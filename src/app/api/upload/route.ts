@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     // Write WebP file to disk
     await fs.promises.writeFile(filePath, webpBuffer);
 
-    const publicUrl = `/api/uploads/${fileName}`;
+    const publicUrl = `/uploads/${fileName}`;
 
     return NextResponse.json({
       success: true,
