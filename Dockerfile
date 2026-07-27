@@ -28,8 +28,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Create db directory and public folder
-RUN mkdir -p /app/data /app/public && chown -R nextjs:nodejs /app/data /app/public
+# Create db directory and public uploads folder
+RUN mkdir -p /app/data /app/public/uploads && chown -R nextjs:nodejs /app/data /app/public /app/public/uploads
 
 # Copy public folder and standalone files
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public

@@ -95,6 +95,39 @@ export default function AdminDashboardPage() {
   const [newProductOfferPrice, setNewProductOfferPrice] = useState(250);
   const [newProductImage, setNewProductImage] = useState('');
   const [addingProduct, setAddingProduct] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setUploadSuccess(false);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setNewProductImage(data.url);
+        setUploadSuccess(true);
+      } else {
+        alert(data.error || 'ফাইল আপলোড ব্যর্থ হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('ছবি আপলোড করতে সমস্যা হয়েছে');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   // Settings state
   const [dhakaDelivery, setDhakaDelivery] = useState(70);
@@ -634,16 +667,50 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-slate-300 font-semibold mb-1">ছবির ইউআরএল (Image URL)</label>
-                      <input
-                        type="url"
-                        required
-                        placeholder="https://images.unsplash.com/..."
-                        value={newProductImage}
-                        onChange={(e) => setNewProductImage(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500 font-mono text-[11px]"
-                      />
+                    {/* Image Upload Box */}
+                    <div className="space-y-2 pt-1 border-t border-slate-800">
+                      <label className="block text-slate-300 font-semibold">প্রোডাক্টের ছবি (কম্পিউটার/মোবাইল থেকে আপলোড)</label>
+                      
+                      <div className="flex items-center gap-3">
+                        <label className="flex-1 bg-slate-950 border border-dashed border-rose-500/50 hover:border-rose-500 p-3 rounded-xl cursor-pointer transition flex items-center justify-center gap-2 text-slate-300 hover:text-white">
+                          <ImageIcon className="w-4 h-4 text-rose-400" />
+                          <span className="font-semibold">{uploadingImage ? 'WebP তে কনভার্ট হচ্ছে...' : 'ছবি সিলেক্ট করুন (Upload Image)'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            disabled={uploadingImage}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+
+                      {uploadSuccess && (
+                        <div className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>ছবিটি সফলভাবে .WebP ফরম্যাটে রূপান্তর করা হয়েছে!</span>
+                        </div>
+                      )}
+
+                      {/* Image Preview or Direct URL */}
+                      <div>
+                        <label className="block text-[11px] text-slate-400 mb-1">অথবা অনলাইন পিকচার লিংক (Image URL):</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="/uploads/product_...webp বা https://..."
+                          value={newProductImage}
+                          onChange={(e) => setNewProductImage(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white outline-none focus:border-rose-500 font-mono text-[11px]"
+                        />
+                      </div>
+
+                      {newProductImage && (
+                        <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={newProductImage} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                      )}
                     </div>
 
                     <div className="pt-3 flex gap-2 justify-end">
