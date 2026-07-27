@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { trackMetaPurchase } from '@/components/MetaPixel';
@@ -133,19 +133,14 @@ export default function RiktooStyleLandingPage() {
 
   // Auto-slide carousel for hero image
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [carouselFade, setCarouselFade] = useState(true);
 
   useEffect(() => {
     if (designList.length <= 1) return;
     const timer = setInterval(() => {
-      setCarouselFade(false);
-      setTimeout(() => {
-        setCarouselIndex((prev) => (prev + 1) % designList.length);
-        setCarouselFade(true);
-      }, 300);
-    }, 3000);
+      setCarouselIndex((prev) => (prev + 1) % designList.length);
+    }, 3500);
     return () => clearInterval(timer);
-  }, [designList]);
+  }, [designList.length]);
 
 
   // Calculate Order Totals
@@ -353,34 +348,46 @@ export default function RiktooStyleLandingPage() {
         {/* Auto-Sliding Hero Carousel */}
         {designList.length > 0 && (
           <div className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] rounded-3xl p-3 border-2 border-purple-500/40 shadow-xl overflow-hidden anim-fadeInUp">
-            <div className="relative rounded-2xl overflow-hidden border border-purple-400/30 group">
-              {/* Slide Image */}
-              <img
-                key={carouselIndex}
-                src={designList[carouselIndex].image}
-                alt={designList[carouselIndex].code}
-                className={`w-full aspect-[4/3] object-cover transition-all duration-300 ${carouselFade ? 'carousel-img-in' : 'carousel-img-out'}`}
-              />
-              {/* Code badge – top left */}
-              <div className="absolute top-3 left-3 bg-rose-600 text-white font-extrabold text-sm px-3 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
-                {designList[carouselIndex].code}
+            <div className="relative rounded-2xl overflow-hidden border border-purple-400/30 group aspect-[4/3]">
+              {/* Horizontal Flex Track */}
+              <div
+                className="w-full h-full flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
+              >
+                {designList.map((item) => (
+                  <div key={item.id} className="w-full h-full shrink-0 relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.image}
+                      alt={item.code}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Code badge – top left */}
+                    <div className="absolute top-3 left-3 bg-rose-600 text-white font-extrabold text-sm px-3 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm z-10">
+                      {item.code}
+                    </div>
+                  </div>
+                ))}
               </div>
+
               {/* Dot indicators */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
                 {designList.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => { setCarouselFade(false); setTimeout(() => { setCarouselIndex(i); setCarouselFade(true); }, 300); }}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${i === carouselIndex ? 'bg-white scale-125' : 'bg-white/40'}`}
+                    onClick={() => setCarouselIndex(i)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      i === carouselIndex ? 'bg-white w-6' : 'bg-white/40 w-2'
+                    }`}
                   />
                 ))}
               </div>
               {/* Gradient overlay bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-purple-950/60 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-purple-950/60 to-transparent pointer-events-none z-10" />
             </div>
             {/* Product title below carousel */}
-            <div className="text-center mt-2 text-white font-bold text-sm px-2 line-clamp-1">
-              {designList[carouselIndex].title}
+            <div className="text-center mt-2.5 text-white font-bold text-sm px-2 line-clamp-1">
+              {designList[carouselIndex]?.title}
             </div>
           </div>
         )}
