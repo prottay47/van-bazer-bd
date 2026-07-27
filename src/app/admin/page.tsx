@@ -51,7 +51,7 @@ interface Order {
   unitPrice?: number;
   deliveryCharge: number;
   totalPrice: number;
-  status: 'Pending' | 'Confirmed' | 'Shipped' | 'Cancelled';
+  status: 'Pending' | 'Confirmed' | 'Shipped' | 'Cancelled' | 'Incomplete';
   createdAt: string;
 }
 
