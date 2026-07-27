@@ -159,6 +159,7 @@ export default function AdminDashboardPage() {
   const [outsideDelivery, setOutsideDelivery] = useState(130);
   const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345');
   const [phoneNumber, setPhoneNumber] = useState('01797-939935');
+  const [whatsappNumber, setWhatsappNumber] = useState('01797-939935');
   const [saveSuccess, setSaveSuccess] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
@@ -174,6 +175,7 @@ export default function AdminDashboardPage() {
         if (data.outsideDelivery !== undefined) setOutsideDelivery(data.outsideDelivery);
         if (data.pixelId !== undefined) setPixelId(data.pixelId);
         if (data.phoneNumber !== undefined) setPhoneNumber(data.phoneNumber);
+        if (data.whatsappNumber !== undefined) setWhatsappNumber(data.whatsappNumber);
       }
     } catch (err) {
       console.error('Error fetching settings:', err);
@@ -228,6 +230,7 @@ export default function AdminDashboardPage() {
           outsideDelivery,
           pixelId,
           phoneNumber,
+          whatsappNumber,
         }),
       });
       const data = await res.json();
@@ -1418,6 +1421,24 @@ export default function AdminDashboardPage() {
                     placeholder="যেমন: 01797-939935"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">ওয়েবসাইটের "📞 অর্ডার করতে কল করুন" বাটনে এই নম্বরটি সংযুক্ত হবে</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-slate-800">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <span className="text-emerald-400">💬</span>
+                  <span>হোয়াটসঅ্যাপ (WhatsApp) সাপোর্ট নম্বর</span>
+                </h3>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1 font-semibold">WhatsApp মোবাইল নম্বর</label>
+                  <input
+                    type="text"
+                    value={whatsappNumber}
+                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-emerald-500 font-mono font-bold text-emerald-400"
+                    placeholder="যেমন: 01797-939935"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">ওয়েবসাইটের নিচে ডানপাশে ভাসমান (Floating) WhatsApp বাটনে এই নম্বরটি সংযুক্ত হবে</p>
                 </div>
               </div>
 

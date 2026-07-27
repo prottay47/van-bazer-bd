@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS = {
   outsideDelivery: 130,
   pixelId: '123456789012345',
   phoneNumber: '01797-939935',
+  whatsappNumber: '01797-939935',
 };
 
 function getSettings() {
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
       outsideDelivery: Number(body.outsideDelivery) || 130,
       pixelId: body.pixelId !== undefined ? String(body.pixelId) : current.pixelId,
       phoneNumber: body.phoneNumber !== undefined ? String(body.phoneNumber).trim() : current.phoneNumber,
+      whatsappNumber: body.whatsappNumber !== undefined ? String(body.whatsappNumber).trim() : current.whatsappNumber,
     };
 
     const dataDir = path.dirname(SETTINGS_FILE);
