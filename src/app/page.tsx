@@ -510,11 +510,11 @@ export default function RiktooStyleLandingPage() {
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <h3 className="text-xs font-bold text-white line-clamp-1">{mat.title}</h3>
-                  <div className="flex items-center justify-center gap-1.5 text-xs">
-                    <span className="text-rose-300 line-through">৳{mat.regularPrice}</span>
-                    <span className="text-emerald-400 font-extrabold text-sm">৳{mat.offerPrice}</span>
+                <div className="space-y-1 py-0.5">
+                  <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 leading-tight">{mat.title}</h3>
+                  <div className="flex items-baseline justify-center gap-2">
+                    <span className="text-xs text-rose-200/80 line-through font-semibold">৳{mat.regularPrice}</span>
+                    <span className="text-base md:text-xl font-black text-[#FBBF24] drop-shadow-md">৳{mat.offerPrice}</span>
                   </div>
                 </div>
 
@@ -639,10 +639,8 @@ export default function RiktooStyleLandingPage() {
                           {mat.title}
                         </h4>
                         <div className="flex items-baseline gap-2">
-                          <span className="text-xs md:text-sm text-emerald-400 font-black">৳{mat.offerPrice}</span>
-                          {mat.regularPrice > mat.offerPrice && (
-                            <span className="text-[11px] text-green-300/60 line-through">৳{mat.regularPrice}</span>
-                          )}
+                          <span className="text-xs text-rose-200/80 line-through font-semibold">৳{mat.regularPrice}</span>
+                          <span className="text-sm md:text-base font-black text-[#FBBF24]">৳{mat.offerPrice}</span>
                         </div>
                       </div>
                     </div>
