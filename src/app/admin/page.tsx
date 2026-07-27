@@ -692,18 +692,7 @@ export default function AdminDashboardPage() {
                         </div>
                       )}
 
-                      {/* Image Preview or Direct URL */}
-                      <div>
-                        <label className="block text-[11px] text-slate-400 mb-1">অথবা অনলাইন পিকচার লিংক (Image URL):</label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="/uploads/product_...webp বা https://..."
-                          value={newProductImage}
-                          onChange={(e) => setNewProductImage(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white outline-none focus:border-rose-500 font-mono text-[11px]"
-                        />
-                      </div>
+
 
                       {newProductImage && (
                         <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
