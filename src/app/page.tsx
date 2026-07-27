@@ -131,6 +131,21 @@ export default function RiktooStyleLandingPage() {
       .catch((err) => console.error('Error fetching products:', err));
   }, []);
 
+  // Auto-slide carousel for hero image
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [carouselFade, setCarouselFade] = useState(true);
+
+  useEffect(() => {
+    if (designList.length <= 1) return;
+    const timer = setInterval(() => {
+      setCarouselFade(false);
+      setTimeout(() => {
+        setCarouselIndex((prev) => (prev + 1) % designList.length);
+        setCarouselFade(true);
+      }, 300);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [designList]);
 
 
   // Calculate Order Totals
@@ -218,8 +233,30 @@ export default function RiktooStyleLandingPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
+      <style>{`
+        @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInScale { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+        @keyframes floatY { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-8px); } }
+        @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        @keyframes carouselFadeIn { from { opacity:0; transform:scale(1.04); } to { opacity:1; transform:scale(1); } }
+        @keyframes slideInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes slideInRight { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(168,85,247,0.5); } 50% { box-shadow:0 0 0 12px rgba(168,85,247,0); } }
+        .anim-fadeInDown { animation: fadeInDown 0.7s ease both; }
+        .anim-fadeInUp { animation: fadeInUp 0.7s ease both; }
+        .anim-fadeInScale { animation: fadeInScale 0.6s ease both; }
+        .anim-float { animation: floatY 3s ease-in-out infinite; }
+        .anim-slideInLeft { animation: slideInLeft 0.6s ease both; }
+        .anim-slideInRight { animation: slideInRight 0.6s ease both; }
+        .anim-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
+        .carousel-img-in { animation: carouselFadeIn 0.4s ease both; }
+        .carousel-img-out { opacity: 0; transform: scale(1.04); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .card-hover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(88,28,135,0.35); }
+      `}</style>
       {/* Top Banner Notice */}
-      <div className="bg-[#581c87] text-white text-center py-2.5 px-4 border-b border-purple-800">
+      <div className="bg-[#581c87] text-white text-center py-2.5 px-4 border-b border-purple-800 anim-fadeInDown">
         <div className="flex items-center justify-center gap-2 text-base md:text-lg font-bold">
           <Sparkles className="w-5 h-5 text-amber-300 animate-spin shrink-0" />
           <span>🔥 স্পেশাল অফার – মাত্র ২৫০ টাকা!</span>
@@ -232,7 +269,7 @@ export default function RiktooStyleLandingPage() {
       <div className="max-w-xl mx-auto px-3 py-4 space-y-6">
         
         {/* Main Hero Container */}
-        <div className="bg-gradient-to-b from-[#6b21a8] to-[#581c87] rounded-3xl p-5 border-2 border-purple-400/40 shadow-2xl space-y-5 text-center">
+        <div className="bg-gradient-to-b from-[#6b21a8] to-[#581c87] rounded-3xl p-5 border-2 border-purple-400/40 shadow-2xl space-y-5 text-center anim-fadeInScale">
           
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 bg-purple-950/80 border border-purple-400/60 text-purple-200 text-xs md:text-sm font-semibold px-3 py-1.5 rounded-full">
@@ -313,18 +350,37 @@ export default function RiktooStyleLandingPage() {
           </div>
         </div>
 
-        {/* Featured Code Display Image */}
+        {/* Auto-Sliding Hero Carousel */}
         {designList.length > 0 && (
-          <div className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] rounded-3xl p-3 border-2 border-purple-500/40 shadow-xl overflow-hidden text-center space-y-2">
-            <div className="relative rounded-2xl overflow-hidden border border-purple-400/30">
+          <div className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] rounded-3xl p-3 border-2 border-purple-500/40 shadow-xl overflow-hidden anim-fadeInUp">
+            <div className="relative rounded-2xl overflow-hidden border border-purple-400/30 group">
+              {/* Slide Image */}
               <img
-                src={designList[0].image}
-                alt={designList[0].code}
-                className="w-full aspect-[4/3] object-cover"
+                key={carouselIndex}
+                src={designList[carouselIndex].image}
+                alt={designList[carouselIndex].code}
+                className={`w-full aspect-[4/3] object-cover transition-all duration-300 ${carouselFade ? 'carousel-img-in' : 'carousel-img-out'}`}
               />
-              <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-rose-600 text-white font-extrabold text-base px-4 py-1 rounded-xl shadow-lg border border-white/20">
-                {designList[0].code}
+              {/* Code badge – top left */}
+              <div className="absolute top-3 left-3 bg-rose-600 text-white font-extrabold text-sm px-3 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm">
+                {designList[carouselIndex].code}
               </div>
+              {/* Dot indicators */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {designList.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { setCarouselFade(false); setTimeout(() => { setCarouselIndex(i); setCarouselFade(true); }, 300); }}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${i === carouselIndex ? 'bg-white scale-125' : 'bg-white/40'}`}
+                  />
+                ))}
+              </div>
+              {/* Gradient overlay bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-purple-950/60 to-transparent pointer-events-none" />
+            </div>
+            {/* Product title below carousel */}
+            <div className="text-center mt-2 text-white font-bold text-sm px-2 line-clamp-1">
+              {designList[carouselIndex].title}
             </div>
           </div>
         )}
@@ -336,18 +392,19 @@ export default function RiktooStyleLandingPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {designList.map((mat) => (
+            {designList.map((mat, idx) => (
               <div
                 key={mat.id}
-                className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] border-2 border-purple-400/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center"
+                className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] border-2 border-purple-400/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center card-hover anim-fadeInUp"
+                style={{ animationDelay: `${idx * 0.08}s` }}
               >
                 <div className="relative rounded-xl overflow-hidden border border-purple-400/20">
                   <img
                     src={mat.image}
                     alt={mat.title}
-                    className="w-full aspect-[4/3] object-cover"
+                    className="w-full aspect-[4/3] object-cover transition-transform duration-500 hover:scale-105"
                   />
-                  <div className="absolute top-2 left-2 bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg">
+                  <div className="absolute top-2 left-2 bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg shadow">
                     {mat.code}
                   </div>
                 </div>
@@ -362,7 +419,7 @@ export default function RiktooStyleLandingPage() {
 
                 <button
                   onClick={() => scrollToCheckout(mat.id)}
-                  className="w-full bg-purple-950 hover:bg-purple-900 border border-purple-400 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 transition"
+                  className="w-full bg-purple-950 hover:bg-purple-900 border border-purple-400 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 transition anim-pulseGlow"
                 >
                   <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
                   <span>অর্ডার করুন</span>
