@@ -29,38 +29,8 @@ export interface ProductDesign {
   image: string;
 }
 
-const DESIGN_LIST: ProductDesign[] = [
-  {
-    id: 'mat_1',
-    code: 'Code: 01',
-    title: '3D Floor Mat Code-1 (বর্ডার সেলাই করা)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'mat_2',
-    code: 'Code: 02',
-    title: '3D Floor Mat Code-2 (বর্ডার সেলাই করা)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'mat_9',
-    code: 'Code: 09',
-    title: '3D Floor Mat Code-09 (রেড ফ্লাওয়ার 3D)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'mat_18',
-    code: 'Code: 18',
-    title: '3D Floor Mat Code-18 (রয়েল ব্লু রোজ)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&auto=format&fit=crop&q=80',
+const DESIGN_LIST: ProductDesign[] = [];
+
 export default function RiktooStyleLandingPage() {
   const [designList, setDesignList] = useState<ProductDesign[]>([]);
 
