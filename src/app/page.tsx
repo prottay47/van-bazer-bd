@@ -39,7 +39,12 @@ export default function RiktooStyleLandingPage() {
     [key: string]: { selected: boolean; quantity: number };
   }>({});
 
-  const [deliveryZone, setDeliveryZone] = useState<'inside_dhaka' | 'outside_dhaka'>('inside_dhaka');
+  const [deliveryZone, setDeliveryZone] = useState<'inside_dhaka' | 'sub_dhaka' | 'outside_dhaka'>('inside_dhaka');
+  const [deliveryCharges, setDeliveryCharges] = useState({
+    inside_dhaka: 70,
+    sub_dhaka: 100,
+    outside_dhaka: 130,
+  });
   
   // Customer inputs
   const [customerName, setCustomerName] = useState('');
@@ -143,13 +148,28 @@ export default function RiktooStyleLandingPage() {
   }, [designList.length]);
 
 
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          setDeliveryCharges({
+            inside_dhaka: Number(data.dhakaDelivery) || 70,
+            sub_dhaka: Number(data.subDhakaDelivery) || 100,
+            outside_dhaka: Number(data.outsideDelivery) || 130,
+          });
+        }
+      })
+      .catch((err) => console.error('Error fetching settings:', err));
+  }, []);
+
   // Calculate Order Totals
   const selectedList = designList.filter((d) => selectedItems[d.id]?.selected);
   const subtotal = selectedList.reduce(
     (sum, d) => sum + d.offerPrice * (selectedItems[d.id]?.quantity || 1),
     0
   );
-  const deliveryCharge = deliveryZone === 'inside_dhaka' ? 70 : 130;
+  const deliveryCharge = deliveryCharges[deliveryZone] || 70;
   const grandTotal = subtotal + deliveryCharge;
 
   const scrollToCheckout = (designId?: string) => {
@@ -205,6 +225,7 @@ export default function RiktooStyleLandingPage() {
           phone,
           address,
           deliveryZone,
+          deliveryCharge,
           selectedItems: itemsPayload,
         }),
       });
@@ -613,29 +634,41 @@ export default function RiktooStyleLandingPage() {
                 <label className="block text-xs font-bold text-purple-200 mb-2">
                   ডেলিভারি এরিয়া সিলেক্ট করুন <span className="text-rose-400">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2.5">
                   <label
                     onClick={() => setDeliveryZone('inside_dhaka')}
-                    className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition ${
+                    className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       deliveryZone === 'inside_dhaka'
-                        ? 'bg-purple-950 border-emerald-400 text-white'
+                        ? 'bg-purple-950 border-emerald-400 text-white shadow-lg'
                         : 'bg-purple-950/60 border-purple-800 text-purple-300'
                     }`}
                   >
-                    <span className="text-xs font-bold">ঢাকার ভেতরে</span>
-                    <span className="text-xs font-extrabold text-emerald-400">৳70</span>
+                    <span className="text-xs md:text-sm font-bold">ঢাকার ভেতরে</span>
+                    <span className="text-xs md:text-sm font-extrabold text-emerald-400">৳{deliveryCharges.inside_dhaka}</span>
+                  </label>
+
+                  <label
+                    onClick={() => setDeliveryZone('sub_dhaka')}
+                    className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
+                      deliveryZone === 'sub_dhaka'
+                        ? 'bg-purple-950 border-emerald-400 text-white shadow-lg'
+                        : 'bg-purple-950/60 border-purple-800 text-purple-300'
+                    }`}
+                  >
+                    <span className="text-xs md:text-sm font-bold leading-snug">ঢাকার সাব সিটিতে (গাজীপুর, নারায়ণগঞ্জ, কেরানীগঞ্জ এবং দোহার)</span>
+                    <span className="text-xs md:text-sm font-extrabold text-emerald-400 shrink-0 ml-2">৳{deliveryCharges.sub_dhaka}</span>
                   </label>
 
                   <label
                     onClick={() => setDeliveryZone('outside_dhaka')}
-                    className={`flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer transition ${
+                    className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       deliveryZone === 'outside_dhaka'
-                        ? 'bg-purple-950 border-emerald-400 text-white'
+                        ? 'bg-purple-950 border-emerald-400 text-white shadow-lg'
                         : 'bg-purple-950/60 border-purple-800 text-purple-300'
                     }`}
                   >
-                    <span className="text-xs font-bold">ঢাকার বাইরে</span>
-                    <span className="text-xs font-extrabold text-emerald-400">৳130</span>
+                    <span className="text-xs md:text-sm font-bold">ঢাকার বাইরে</span>
+                    <span className="text-xs md:text-sm font-extrabold text-emerald-400">৳{deliveryCharges.outside_dhaka}</span>
                   </label>
                 </div>
               </div>

@@ -40,10 +40,16 @@ export async function POST(req: Request) {
       totalQuantity += qty;
     });
 
-    const isInsideDhaka = deliveryZone === 'inside_dhaka';
-    const deliveryCharge = isInsideDhaka
-      ? PRODUCT_DETAILS.insideDhakaCharge
-      : PRODUCT_DETAILS.outsideDhakaCharge;
+    let deliveryCharge = Number(body.deliveryCharge);
+    if (!deliveryCharge || isNaN(deliveryCharge)) {
+      if (deliveryZone === 'inside_dhaka') {
+        deliveryCharge = 70;
+      } else if (deliveryZone === 'sub_dhaka') {
+        deliveryCharge = 100;
+      } else {
+        deliveryCharge = 130;
+      }
+    }
     const totalPrice = subtotal + deliveryCharge;
 
     const timestamp = Date.now();

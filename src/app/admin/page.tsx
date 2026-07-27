@@ -143,11 +143,28 @@ export default function AdminDashboardPage() {
 
   // Settings state
   const [dhakaDelivery, setDhakaDelivery] = useState(70);
+  const [subDhakaDelivery, setSubDhakaDelivery] = useState(100);
   const [outsideDelivery, setOutsideDelivery] = useState(130);
   const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345');
   const [saveSuccess, setSaveSuccess] = useState('');
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const router = useRouter();
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data) {
+        if (data.dhakaDelivery !== undefined) setDhakaDelivery(data.dhakaDelivery);
+        if (data.subDhakaDelivery !== undefined) setSubDhakaDelivery(data.subDhakaDelivery);
+        if (data.outsideDelivery !== undefined) setOutsideDelivery(data.outsideDelivery);
+        if (data.pixelId !== undefined) setPixelId(data.pixelId);
+      }
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+    }
+  };
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -182,7 +199,36 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     fetchDashboardData();
     fetchProductsData();
+    fetchSettings();
   }, []);
+
+  const handleSaveSettings = async () => {
+    setSavingSettings(true);
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dhakaDelivery,
+          subDhakaDelivery,
+          outsideDelivery,
+          pixelId,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSaveSuccess('সেটিংস সফলভাবে সংরক্ষিত হয়েছে!');
+        setTimeout(() => setSaveSuccess(''), 3000);
+      } else {
+        alert(data.error || 'সেটিংস সেভ করতে ব্যর্থ হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('সেটিংস সেভ করতে সমস্যা হয়েছে');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);
@@ -920,9 +966,15 @@ export default function AdminDashboardPage() {
                             <span className={`inline-block text-[10px] px-2 py-0.5 rounded font-semibold border ${
                               ord.deliveryZone === 'inside_dhaka'
                                 ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                                : ord.deliveryZone === 'sub_dhaka'
+                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
                                 : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
                             }`}>
-                              {ord.deliveryZone === 'inside_dhaka' ? 'ঢাকার ভেতরে' : 'ঢাকার বাইরে'}
+                              {ord.deliveryZone === 'inside_dhaka'
+                                ? 'ঢাকার ভেতরে'
+                                : ord.deliveryZone === 'sub_dhaka'
+                                ? 'ঢাকার সাব সিটি'
+                                : 'ঢাকার বাইরে'}
                             </span>
                           </td>
 
@@ -1113,14 +1165,25 @@ export default function AdminDashboardPage() {
               
               <div className="space-y-3">
                 <h3 className="text-sm font-bold text-white">ডেলিভারি চার্জ সেটিংস (BDT)</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs text-slate-400 mb-1 font-semibold">ঢাকার ভেতরে চার্জ (৳)</label>
                     <input
                       type="number"
                       value={dhakaDelivery}
                       onChange={(e) => setDhakaDelivery(Number(e.target.value))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500 font-bold text-emerald-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1 font-semibold">
+                      ঢাকার সাব সিটিতে (গাজীপুর, নারায়ণগঞ্জ, কেরানীগঞ্জ এবং দোহার) (৳)
+                    </label>
+                    <input
+                      type="number"
+                      value={subDhakaDelivery}
+                      onChange={(e) => setSubDhakaDelivery(Number(e.target.value))}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500 font-bold text-emerald-400"
                     />
                   </div>
                   <div>
@@ -1129,7 +1192,7 @@ export default function AdminDashboardPage() {
                       type="number"
                       value={outsideDelivery}
                       onChange={(e) => setOutsideDelivery(Number(e.target.value))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500 font-bold text-emerald-400"
                     />
                   </div>
                 </div>
@@ -1151,14 +1214,12 @@ export default function AdminDashboardPage() {
 
               <div className="pt-4 border-t border-slate-800 flex justify-end">
                 <button
-                  onClick={() => {
-                    setSaveSuccess('সেটিংস সফলভাবে সংরক্ষিত হয়েছে!');
-                    setTimeout(() => setSaveSuccess(''), 3000);
-                  }}
-                  className="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-rose-600/20"
+                  onClick={handleSaveSettings}
+                  disabled={savingSettings}
+                  className="bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-bold text-xs px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-rose-600/20"
                 >
                   <Save className="w-4 h-4" />
-                  <span>সেটিংস সেভ করুন</span>
+                  <span>{savingSettings ? 'সেভ হচ্ছে...' : 'সেটিংস সেভ করুন'}</span>
                 </button>
               </div>
 
