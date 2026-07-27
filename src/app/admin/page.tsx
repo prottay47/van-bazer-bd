@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   BarChart3,
+  Layers,
   ShoppingBag,
   AlertCircle,
   Wallet,
@@ -26,7 +27,12 @@ import {
   ShieldAlert,
   ArrowUpRight,
   PieChart,
-  Save
+  Save,
+  Plus,
+  Edit,
+  Tag,
+  Check,
+  Eye
 } from 'lucide-react';
 
 interface Order {
@@ -57,14 +63,83 @@ interface Stats {
   todayRevenue: number;
 }
 
+interface Product {
+  id: string;
+  code: string;
+  title: string;
+  regularPrice: number;
+  offerPrice: number;
+  image: string;
+  inStock: boolean;
+}
+
+const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'mat_1',
+    code: 'Code: 01',
+    title: '3D Floor Mat Code-1 (বর্ডার সেলাই করা)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+  {
+    id: 'mat_2',
+    code: 'Code: 02',
+    title: '3D Floor Mat Code-2 (বর্ডার সেলাই করা)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+  {
+    id: 'mat_9',
+    code: 'Code: 09',
+    title: '3D Floor Mat Code-09 (রেড ফ্লাওয়ার 3D)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+  {
+    id: 'mat_18',
+    code: 'Code: 18',
+    title: '3D Floor Mat Code-18 (রয়েল ব্লু রোজ)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+  {
+    id: 'mat_24',
+    code: 'Code: 24',
+    title: '3D Floor Mat Code-24 (গোল্ডেন মোজাইক)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+  {
+    id: 'mat_35',
+    code: 'Code: 35',
+    title: '3D Floor Mat Code-35 (মার্বেল টেক্সচার)',
+    regularPrice: 450,
+    offerPrice: 250,
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
+    inStock: true,
+  },
+];
+
 export default function AdminDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'incomplete' | 'accounts' | 'settings'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'incomplete' | 'accounts' | 'settings'>('analytics');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [productSearch, setProductSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -135,6 +210,12 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleToggleStock = (productId: string) => {
+    setProducts(prev =>
+      prev.map(p => (p.id === productId ? { ...p, inStock: !p.inStock } : p))
+    );
+  };
+
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
     router.push('/admin/login');
@@ -180,6 +261,11 @@ export default function AdminDashboardPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const filteredProducts = products.filter((p) =>
+    p.code.toLowerCase().includes(productSearch.toLowerCase()) ||
+    p.title.toLowerCase().includes(productSearch.toLowerCase())
+  );
+
   // Calculate stats for Accounts & Analytics
   const insideDhakaCount = orders.filter(o => o.deliveryZone === 'inside_dhaka').length;
   const outsideDhakaCount = orders.filter(o => o.deliveryZone === 'outside_dhaka').length;
@@ -189,6 +275,7 @@ export default function AdminDashboardPage() {
 
   const navItems = [
     { id: 'analytics', label: 'এনালাইটিক্স', icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 'products', label: 'প্রোডাক্টস', icon: <Layers className="w-5 h-5" />, badge: products.length },
     { id: 'orders', label: 'অর্ডার', icon: <ShoppingBag className="w-5 h-5" />, badge: orders.length },
     { id: 'incomplete', label: 'অসমাপ্ত অর্ডার', icon: <AlertCircle className="w-5 h-5" />, badge: stats?.cancelledOrders || 0 },
     { id: 'accounts', label: 'হিসাব', icon: <Wallet className="w-5 h-5" /> },
@@ -272,7 +359,7 @@ export default function AdminDashboardPage() {
           </nav>
         </div>
 
-        {/* Sidebar Footer (Logout & Quick Refresh) */}
+        {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800 space-y-2">
           <button
             onClick={fetchDashboardData}
@@ -292,7 +379,7 @@ export default function AdminDashboardPage() {
         </div>
       </aside>
 
-      {/* Backdrop overlay for mobile sidebar */}
+      {/* Mobile Backdrop */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -323,7 +410,6 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {/* Top Overview Cards */}
             {stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
@@ -372,10 +458,7 @@ export default function AdminDashboardPage() {
               </div>
             )}
 
-            {/* Distribution Breakdown Charts Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Order Status Breakdown */}
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <h3 className="font-bold text-white text-sm flex items-center gap-2">
@@ -408,7 +491,6 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Delivery Zone Breakdown */}
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <h3 className="font-bold text-white text-sm flex items-center gap-2">
@@ -446,7 +528,106 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 2: ORDERS (অর্ডার) */}
+        {/* TAB 2: PRODUCTS (প্রোডাক্টস) */}
+        {activeTab === 'products' && (
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div>
+                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                  <Layers className="w-7 h-7 text-emerald-400" />
+                  <span>প্রোডাক্ট ভেরিয়েন্ট ক্যাটালগ</span>
+                </h1>
+                <p className="text-xs text-slate-400">আপনার ডোর ম্যাটের ৩ডি ডিজাইন, প্রাইসিং ও স্টক ব্যবস্থাপনা</p>
+              </div>
+
+              <button
+                onClick={() => alert('নতুন ভেরিয়েন্ট শীঘ্রই যোগ করা যাবে!')}
+                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-2 text-xs font-bold shadow-lg shadow-rose-600/20 self-start md:self-auto"
+              >
+                <Plus className="w-4 h-4" />
+                <span>নতুন ভেরিয়েন্ট যোগ করুন</span>
+              </button>
+            </div>
+
+            {/* Product Search & Filter */}
+            <div className="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <div className="relative w-full md:w-80">
+                <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="কোড বা প্রোডাক্টের নাম সার্চ..."
+                  value={productSearch}
+                  onChange={(e) => setProductSearch(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 focus:border-rose-500 rounded-xl pl-9 pr-4 py-2 text-xs text-white outline-none"
+                />
+              </div>
+
+              <span className="text-xs text-slate-400 font-semibold hidden md:inline">
+                মোট {filteredProducts.length} টি ভেরিয়েন্ট সক্রিয়
+              </span>
+            </div>
+
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {filteredProducts.map((p) => (
+                <div key={p.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
+                  <div className="space-y-3">
+                    {/* Product Image */}
+                    <div className="relative h-44 w-full bg-slate-950">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                      <div className="absolute top-3 left-3 bg-purple-950/90 border border-purple-400/50 text-purple-200 text-xs font-mono font-bold px-2.5 py-1 rounded-lg">
+                        {p.code}
+                      </div>
+                      <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-lg border ${
+                        p.inStock
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                          : 'bg-rose-500/20 text-rose-400 border-rose-500/40'
+                      }`}>
+                        {p.inStock ? 'In Stock' : 'Out of Stock'}
+                      </div>
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="p-4 space-y-2">
+                      <h3 className="font-bold text-white text-sm line-clamp-2">{p.title}</h3>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-black text-emerald-400">৳{p.offerPrice}</span>
+                        <span className="text-xs text-slate-500 line-through">৳{p.regularPrice}</span>
+                        <span className="text-[10px] text-amber-400 font-bold bg-amber-400/10 px-1.5 py-0.5 rounded">
+                          অফার প্রাইস
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="p-4 pt-0 flex gap-2">
+                    <button
+                      onClick={() => handleToggleStock(p.id)}
+                      className={`flex-1 text-xs font-bold py-2 rounded-xl border transition ${
+                        p.inStock
+                          ? 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                          : 'bg-emerald-600 text-white border-emerald-500'
+                      }`}
+                    >
+                      {p.inStock ? 'স্টক ইন' : 'স্টক আউট মুক্ত করুন'}
+                    </button>
+                    <button
+                      onClick={() => alert(`প্রোডাক্ট ${p.code} এডিট অপশন শিগগিরই আসছে`)}
+                      className="p-2 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-xl transition"
+                      title="এডিট করুন"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: ORDERS (অর্ডার) */}
         {activeTab === 'orders' && (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -477,7 +658,6 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Search & Status Filters */}
             <div className="flex flex-col md:flex-row gap-3 justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <div className="relative w-full md:w-80">
                 <Search className="w-4 h-4 absolute left-3 top-3 text-slate-500" />
@@ -507,7 +687,6 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Orders Table */}
             <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-300">
@@ -610,7 +789,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 3: INCOMPLETE ORDERS (অসমাপ্ত অর্ডার) */}
+        {/* TAB 4: INCOMPLETE ORDERS (অসমাপ্ত অর্ডার) */}
         {activeTab === 'incomplete' && (
           <div className="space-y-6">
             <div className="border-b border-slate-800 pb-4">
@@ -674,7 +853,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 4: ACCOUNTS (হিসাব) */}
+        {/* TAB 5: ACCOUNTS (হিসাব) */}
         {activeTab === 'accounts' && (
           <div className="space-y-6">
             <div className="border-b border-slate-800 pb-4">
@@ -686,22 +865,18 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
-              {/* Gross Revenue */}
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
                 <div className="text-xs text-slate-400 font-semibold uppercase">সর্বমোট গ্রস রেভিনিউ</div>
                 <div className="text-3xl font-black text-emerald-400">৳{(stats?.totalRevenue || 0).toLocaleString()}</div>
                 <p className="text-xs text-slate-400">কুরিয়ার চার্জ সহ কাস্টমার থেকে মোট সংগৃহীত টাকা</p>
               </div>
 
-              {/* Delivery Expense */}
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
                 <div className="text-xs text-slate-400 font-semibold uppercase">কুরিয়ার পে-আউট (ডেলিভারি খরচ)</div>
                 <div className="text-3xl font-black text-amber-400">৳{totalDeliveryRevenue.toLocaleString()}</div>
                 <p className="text-xs text-slate-400">ঢাকা ({insideDhakaCount}টি @70৳) + ঢাকার বাইরে ({outsideDhakaCount}টি @130৳)</p>
               </div>
 
-              {/* Net Product Sales */}
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
                 <div className="text-xs text-slate-400 font-semibold uppercase">পণ্য বিক্রয় হতে নিট আয়</div>
                 <div className="text-3xl font-black text-sky-400">৳{netProductRevenue.toLocaleString()}</div>
@@ -709,7 +884,6 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Profit Margin Estimator */}
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-emerald-400" />
@@ -729,7 +903,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 5: SETTINGS (সেটিংস) */}
+        {/* TAB 6: SETTINGS (সেটিংস) */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
             <div className="border-b border-slate-800 pb-4">
@@ -748,7 +922,6 @@ export default function AdminDashboardPage() {
 
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
               
-              {/* Delivery Charge Settings */}
               <div className="space-y-3">
                 <h3 className="text-sm font-bold text-white">ডেলিভারি চার্জ সেটিংস (BDT)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -773,7 +946,6 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Meta Pixel ID Settings */}
               <div className="space-y-3 pt-4 border-t border-slate-800">
                 <h3 className="text-sm font-bold text-white">মেটা পিক্সেল (Meta Pixel ID)</h3>
                 <div>
@@ -788,7 +960,6 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Action Save Button */}
               <div className="pt-4 border-t border-slate-800 flex justify-end">
                 <button
                   onClick={() => {
