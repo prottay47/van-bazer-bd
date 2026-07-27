@@ -12,6 +12,8 @@ const DEFAULT_SETTINGS = {
   pixelId: '123456789012345',
   phoneNumber: '01797-939935',
   whatsappNumber: '01797-939935',
+  boostDollar: 0,
+  dollarRate: 125,
 };
 
 function getSettings() {
@@ -49,6 +51,8 @@ export async function POST(req: Request) {
       pixelId: body.pixelId !== undefined ? String(body.pixelId) : current.pixelId,
       phoneNumber: body.phoneNumber !== undefined ? String(body.phoneNumber).trim() : current.phoneNumber,
       whatsappNumber: body.whatsappNumber !== undefined ? String(body.whatsappNumber).trim() : current.whatsappNumber,
+      boostDollar: body.boostDollar !== undefined ? Number(body.boostDollar) : current.boostDollar,
+      dollarRate: body.dollarRate !== undefined ? Number(body.dollarRate) : current.dollarRate,
     };
 
     const dataDir = path.dirname(SETTINGS_FILE);

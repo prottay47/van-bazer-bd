@@ -62,8 +62,11 @@ interface Stats {
   confirmedOrders: number;
   shippedOrders: number;
   cancelledOrders: number;
+  incompleteOrders?: number;
   todayOrdersCount: number;
   todayRevenue: number;
+  last7DaysRevenue?: number;
+  last30DaysRevenue?: number;
 }
 
 interface Product {
@@ -162,6 +165,8 @@ export default function AdminDashboardPage() {
   const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345');
   const [phoneNumber, setPhoneNumber] = useState('01797-939935');
   const [whatsappNumber, setWhatsappNumber] = useState('01797-939935');
+  const [boostDollar, setBoostDollar] = useState<number>(0);
+  const [dollarRate, setDollarRate] = useState<number>(125);
   const [saveSuccess, setSaveSuccess] = useState('');
   const [savingSettings, setSavingSettings] = useState(false);
 
@@ -178,6 +183,8 @@ export default function AdminDashboardPage() {
         if (data.pixelId !== undefined) setPixelId(data.pixelId);
         if (data.phoneNumber !== undefined) setPhoneNumber(data.phoneNumber);
         if (data.whatsappNumber !== undefined) setWhatsappNumber(data.whatsappNumber);
+        if (data.boostDollar !== undefined) setBoostDollar(Number(data.boostDollar));
+        if (data.dollarRate !== undefined) setDollarRate(Number(data.dollarRate));
       }
     } catch (err) {
       console.error('Error fetching settings:', err);
@@ -465,11 +472,37 @@ export default function AdminDashboardPage() {
   );
 
   // Calculate stats for Accounts & Analytics
-  const insideDhakaCount = orders.filter(o => o.deliveryZone === 'inside_dhaka').length;
-  const outsideDhakaCount = orders.filter(o => o.deliveryZone === 'outside_dhaka').length;
-  const totalDeliveryRevenue = orders.reduce((sum, o) => sum + (o.deliveryCharge || 0), 0);
-  const netProductRevenue = (stats?.totalRevenue || 0) - totalDeliveryRevenue;
-  const estimatedProfit = Math.round(netProductRevenue * 0.4); // estimated margin 40%
+  const validOrdersList = orders.filter(o => o.status !== 'Cancelled' && o.status !== 'Incomplete');
+  const insideDhakaCount = validOrdersList.filter(o => o.deliveryZone === 'inside_dhaka').length;
+  const outsideDhakaCount = validOrdersList.filter(o => o.deliveryZone === 'outside_dhaka').length;
+  const totalDeliveryRevenue = validOrdersList.reduce((sum, o) => sum + (o.deliveryCharge || 0), 0);
+  const totalGrossRevenue = validOrdersList.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+  const netProductRevenue = totalGrossRevenue - totalDeliveryRevenue;
+  
+  const totalBoostSpend = (boostDollar || 0) * (dollarRate || 0);
+  const netProfitLoss = netProductRevenue - totalBoostSpend;
+
+  const handleResetBoost = async () => {
+    if (!confirm('আপনি কি নিশ্চিত যে বুস্টিং হিসাব ০ ডলারে রিসেট করতে চান?')) return;
+    setBoostDollar(0);
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dhakaDelivery,
+          subDhakaDelivery,
+          outsideDelivery,
+          phoneNumber,
+          whatsappNumber,
+          boostDollar: 0,
+          dollarRate,
+        }),
+      });
+    } catch (e) {
+      console.error('Reset boost error:', e);
+    }
+  };
 
   const navItems = [
     { id: 'analytics', label: 'এনালাইটিক্স', icon: <BarChart3 className="w-5 h-5" /> },
@@ -615,43 +648,43 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>মোট সেলস রেভিনিউ</span>
-                    <DollarSign className="w-5 h-5 text-emerald-400" />
+                    <span>আজকের মোট সেলস</span>
+                    <TrendingUp className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div className="text-2xl md:text-3xl font-black text-emerald-400">
-                    ৳{stats.totalRevenue.toLocaleString()}
-                  </div>
-                  <p className="text-[11px] text-slate-500">কনফার্মড ও শিপড অর্ডার হতে</p>
-                </div>
-
-                <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
-                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>আজকের মোট সেলস</span>
-                    <TrendingUp className="w-5 h-5 text-rose-400" />
-                  </div>
-                  <div className="text-2xl md:text-3xl font-black text-white">
-                    ৳{stats.todayRevenue.toLocaleString()}
+                    ৳{(stats.todayRevenue || 0).toLocaleString()}
                   </div>
                   <p className="text-[11px] text-slate-500">আজকের {stats.todayOrdersCount} টি অর্ডার</p>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
-                    <span>পেন্ডিং অর্ডার</span>
-                    <Clock className="w-5 h-5 text-amber-400" />
+                    <span>গত ৭ দিনের সেলস</span>
+                    <DollarSign className="w-5 h-5 text-amber-400" />
                   </div>
                   <div className="text-2xl md:text-3xl font-black text-amber-400">
-                    {stats.pendingOrders}
+                    ৳{(stats.last7DaysRevenue || 0).toLocaleString()}
                   </div>
-                  <p className="text-[11px] text-slate-500">কনফার্মেশনের অপেক্ষায়</p>
+                  <p className="text-[11px] text-slate-500">গত ৭ দিনের সর্বমোট বিক্রি</p>
+                </div>
+
+                <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
+                  <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                    <span>গত ৩০ দিনের সেলস</span>
+                    <BarChart3 className="w-5 h-5 text-sky-400" />
+                  </div>
+                  <div className="text-2xl md:text-3xl font-black text-sky-400">
+                    ৳{(stats.last30DaysRevenue || 0).toLocaleString()}
+                  </div>
+                  <p className="text-[11px] text-slate-500">গত ৩০ দিনের সর্বমোট বিক্রি</p>
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
                     <span>মোট অর্ডার সংখ্যা</span>
-                    <PackageCheck className="w-5 h-5 text-sky-400" />
+                    <PackageCheck className="w-5 h-5 text-purple-400" />
                   </div>
-                  <div className="text-2xl md:text-3xl font-black text-sky-400">
+                  <div className="text-2xl md:text-3xl font-black text-purple-400">
                     {stats.totalOrders}
                   </div>
                   <p className="text-[11px] text-slate-500">সর্বমোট নিবন্ধিত</p>
@@ -1381,43 +1414,102 @@ export default function AdminDashboardPage() {
                 <Wallet className="w-7 h-7 text-emerald-400" />
                 <span>ব্যবসায়িক হিসাব ও লাভ-ক্ষতি সামারি</span>
               </h1>
-              <p className="text-xs text-slate-400">মোট বিক্রয়, কুরিয়ার চার্জ ও অনুমিত নিট প্রফিট ক্যালকুলেশন</p>
+              <p className="text-xs text-slate-400">অ্যাড বুস্টিং খরচ, পণ্যের বিক্রি ও লাইভ প্রফিট/লস ক্যালকুলেটর</p>
             </div>
 
+            {/* Boost Input Form Section */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-amber-400" />
+                    <span>অ্যাড ক্যাম্পেইন বুস্টিং হিসেব (Facebook Ad Spend)</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">এখানে মোট ডলার ও ডলার রেট ইনপুট দিন, লাভ-ক্ষতি অটোমেটিক ক্যালকুলেট হবে</p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleResetBoost}
+                  className="px-3.5 py-2 bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>হিসাব রিসেট করুন (Reset Boost Data)</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-1">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                    Boost-এর মোট ডলার ($)
+                  </label>
+                  <input
+                    type="number"
+                    value={boostDollar}
+                    onChange={(e) => setBoostDollar(Number(e.target.value))}
+                    placeholder="যেমন: 10"
+                    className="w-full bg-slate-950 border border-slate-800 focus:border-amber-400 rounded-xl px-4 py-2.5 text-white font-bold text-sm outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                    ডলার রেট (৳)
+                  </label>
+                  <input
+                    type="number"
+                    value={dollarRate}
+                    onChange={(e) => setDollarRate(Number(e.target.value))}
+                    placeholder="যেমন: 125"
+                    className="w-full bg-slate-950 border border-slate-800 focus:border-amber-400 rounded-xl px-4 py-2.5 text-white font-bold text-sm outline-none transition"
+                  />
+                </div>
+
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={handleSaveSettings}
+                    disabled={savingSettings}
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2.5 px-4 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{savingSettings ? 'সেভ হচ্ছে...' : 'হিসাব আপডেট করুন'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Calculations Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
-                <div className="text-xs text-slate-400 font-semibold uppercase">সর্বমোট গ্রস রেভিনিউ</div>
-                <div className="text-3xl font-black text-emerald-400">৳{(stats?.totalRevenue || 0).toLocaleString()}</div>
-                <p className="text-xs text-slate-400">কুরিয়ার চার্জ সহ কাস্টমার থেকে মোট সংগৃহীত টাকা</p>
+                <div className="text-xs text-slate-400 font-semibold uppercase">অ্যাড বুস্টিং-এ মোট খরচ</div>
+                <div className="text-3xl font-black text-rose-400">৳{totalBoostSpend.toLocaleString()}</div>
+                <p className="text-xs text-slate-400">${boostDollar} ডলার × ৳{dollarRate} রেট</p>
               </div>
 
               <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
-                <div className="text-xs text-slate-400 font-semibold uppercase">কুরিয়ার পে-আউট (ডেলিভারি খরচ)</div>
-                <div className="text-3xl font-black text-amber-400">৳{totalDeliveryRevenue.toLocaleString()}</div>
-                <p className="text-xs text-slate-400">ঢাকা ({insideDhakaCount}টি @70৳) + ঢাকার বাইরে ({outsideDhakaCount}টি @130৳)</p>
-              </div>
-
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-3">
-                <div className="text-xs text-slate-400 font-semibold uppercase">পণ্য বিক্রয় হতে নিট আয়</div>
+                <div className="text-xs text-slate-400 font-semibold uppercase">পণ্যের মোট বিক্রি (ডেলিভারি চার্জ ছাড়া)</div>
                 <div className="text-3xl font-black text-sky-400">৳{netProductRevenue.toLocaleString()}</div>
-                <p className="text-xs text-slate-400">ডেলিভারি চার্জ বাদ দিয়ে আসল পণ্যের মূল্য</p>
+                <p className="text-xs text-slate-400">মোট বিক্রি থেকে কুরিয়ার চার্জ বাদ দিয়ে</p>
               </div>
-            </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-emerald-400" />
-                <span>আনুমানিক নিট প্রফিট মার্জিন (Est. Profit)</span>
-              </h3>
-
-              <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <span className="text-xs text-slate-400">আনুমানিক প্রফিট মার্জিন (~৪০%):</span>
-                  <div className="text-2xl font-black text-emerald-400 mt-1">৳{estimatedProfit.toLocaleString()}</div>
+              {/* Profit or Loss Dynamic Banner Card */}
+              <div className={`border p-6 rounded-2xl space-y-3 shadow-2xl ${
+                netProfitLoss >= 0
+                  ? 'bg-gradient-to-br from-emerald-950/80 to-slate-900 border-emerald-500/50'
+                  : 'bg-gradient-to-br from-rose-950/80 to-slate-900 border-rose-500/50'
+              }`}>
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                  {netProfitLoss >= 0 ? '🎉 নিট প্রফিট (Net Profit)' : '⚠️ নিট লস (Net Loss)'}
                 </div>
-                <div className="text-xs text-slate-400 leading-relaxed">
-                  * বি.দ্র.: এই হিসাবটি পণ্য ক্রয়মূল্য, প্যাকেজিং ও ফেসবুক অ্যাড স্পেন্ড বাদ দিয়ে আনুমানিক মার্জিন হিসোবে তৈরি করা হয়েছে।
+                <div className={`text-3xl font-black ${netProfitLoss >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  ৳{Math.abs(netProfitLoss).toLocaleString()}
                 </div>
+                <p className="text-xs text-slate-300">
+                  {netProfitLoss >= 0
+                    ? `পণ্যের আয় (৳${netProductRevenue}) - অ্যাড খরচ (৳${totalBoostSpend})`
+                    : `অ্যাড খরচ (৳${totalBoostSpend}) - পণ্যের আয় (৳${netProductRevenue})`}
+                </p>
               </div>
             </div>
           </div>

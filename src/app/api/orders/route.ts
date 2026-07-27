@@ -109,10 +109,12 @@ export async function GET() {
 
     const allOrders = await db.select().from(orders).orderBy(desc(orders.createdAt));
 
+    const validOrders = allOrders.filter(
+      (o) => o.status !== 'Cancelled' && o.status !== 'Incomplete'
+    );
+
     const totalOrders = allOrders.length;
-    const totalRevenue = allOrders
-      .filter((o) => o.status !== 'Cancelled' && o.status !== 'Incomplete')
-      .reduce((sum, o) => sum + o.totalPrice, 0);
+    const totalRevenue = validOrders.reduce((sum, o) => sum + o.totalPrice, 0);
 
     const pendingOrders = allOrders.filter((o) => o.status === 'Pending').length;
     const confirmedOrders = allOrders.filter((o) => o.status === 'Confirmed').length;
@@ -120,11 +122,22 @@ export async function GET() {
     const cancelledOrders = allOrders.filter((o) => o.status === 'Cancelled').length;
     const incompleteOrders = allOrders.filter((o) => o.status === 'Incomplete').length;
 
-    const todayStr = new Date().toISOString().split('T')[0];
-    const todayOrders = allOrders.filter((o) => o.createdAt.startsWith(todayStr));
-    const todayRevenue = todayOrders
-      .filter((o) => o.status !== 'Cancelled' && o.status !== 'Incomplete')
-      .reduce((sum, o) => sum + o.totalPrice, 0);
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+
+    // Today's Sales
+    const todayOrders = validOrders.filter((o) => o.createdAt.startsWith(todayStr));
+    const todayRevenue = todayOrders.reduce((sum, o) => sum + o.totalPrice, 0);
+
+    // Last 7 Days Sales
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const last7DaysOrders = validOrders.filter((o) => new Date(o.createdAt) >= sevenDaysAgo);
+    const last7DaysRevenue = last7DaysOrders.reduce((sum, o) => sum + o.totalPrice, 0);
+
+    // Last 30 Days Sales
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const last30DaysOrders = validOrders.filter((o) => new Date(o.createdAt) >= thirtyDaysAgo);
+    const last30DaysRevenue = last30DaysOrders.reduce((sum, o) => sum + o.totalPrice, 0);
 
     return NextResponse.json({
       orders: allOrders,
@@ -138,6 +151,8 @@ export async function GET() {
         incompleteOrders,
         todayOrdersCount: todayOrders.length,
         todayRevenue,
+        last7DaysRevenue,
+        last30DaysRevenue,
       },
     });
   } catch (error: any) {
