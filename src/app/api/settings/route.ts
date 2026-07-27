@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS = {
   subDhakaDelivery: 100,
   outsideDelivery: 130,
   pixelId: '123456789012345',
+  phoneNumber: '01797-939935',
 };
 
 function getSettings() {
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
       subDhakaDelivery: Number(body.subDhakaDelivery) || 100,
       outsideDelivery: Number(body.outsideDelivery) || 130,
       pixelId: body.pixelId !== undefined ? String(body.pixelId) : current.pixelId,
+      phoneNumber: body.phoneNumber !== undefined ? String(body.phoneNumber).trim() : current.phoneNumber,
     };
 
     const dataDir = path.dirname(SETTINGS_FILE);

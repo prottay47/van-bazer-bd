@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { trackMetaPurchase } from '@/components/MetaPixel';
@@ -45,6 +45,7 @@ export default function RiktooStyleLandingPage() {
     sub_dhaka: 100,
     outside_dhaka: 130,
   });
+  const [callNumber, setCallNumber] = useState(CALL_NUMBER);
   
   // Customer inputs
   const [customerName, setCustomerName] = useState('');
@@ -158,6 +159,9 @@ export default function RiktooStyleLandingPage() {
             sub_dhaka: Number(data.subDhakaDelivery) || 100,
             outside_dhaka: Number(data.outsideDelivery) || 130,
           });
+          if (data.phoneNumber) {
+            setCallNumber(data.phoneNumber);
+          }
         }
       })
       .catch((err) => console.error('Error fetching settings:', err));
@@ -359,7 +363,7 @@ export default function RiktooStyleLandingPage() {
             </button>
 
             <a
-              href={`tel:${CALL_NUMBER}`}
+              href={`tel:${callNumber}`}
               className="w-full bg-green-950/90 border border-green-400 hover:bg-green-900 text-white font-bold py-3 px-6 rounded-2xl text-center block text-base shadow flex items-center justify-center gap-2"
             >
               <PhoneCall className="w-5 h-5 text-emerald-400" />
@@ -713,16 +717,13 @@ export default function RiktooStyleLandingPage() {
         {/* Footer */}
         <footer className="text-center text-xs text-green-300 pt-4 space-y-2">
           <p>© 2026 Van Bazer BD - সর্বস্বত্ব সংরক্ষিত।</p>
-          <div className="flex justify-center gap-4 text-green-400">
-            <a href="/admin/login" className="hover:underline text-green-400">অ্যাডমিন প্যানেল</a>
-          </div>
         </footer>
       </div>
 
       {/* Sticky Mobile Bottom Bar */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#15803D] border-t-2 border-green-400 p-2.5 flex gap-2 z-40 shadow-2xl">
         <a
-          href={`tel:${CALL_NUMBER}`}
+          href={`tel:${callNumber}`}
           className="flex-1 bg-green-950 border border-green-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5"
         >
           <PhoneCall className="w-4 h-4 text-emerald-400" />
