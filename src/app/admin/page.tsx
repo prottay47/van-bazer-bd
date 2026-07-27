@@ -1189,9 +1189,34 @@ export default function AdminDashboardPage() {
                             </span>
                           </td>
 
-                          <td className="p-3.5 space-y-1">
-                            <div className="text-slate-200">{ord.productVariant}</div>
-                            <div className="text-slate-500 text-[10px]">পরিমাণ: {ord.quantity} টি</div>
+                          <td className="p-3.5 space-y-1 max-w-xs">
+                            {(() => {
+                              try {
+                                const items = JSON.parse(ord.selectedItemsJson || '[]');
+                                if (Array.isArray(items) && items.length > 0) {
+                                  return (
+                                    <div className="space-y-1">
+                                      {items.map((it: any, i: number) => (
+                                        <div key={i} className="text-xs font-semibold flex items-center gap-1.5 flex-wrap">
+                                          <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">
+                                            {it.code || 'Code'}
+                                          </span>
+                                          <span className="text-slate-200 truncate max-w-[140px]">{it.title || ord.productName}</span>
+                                          <span className="text-slate-400 text-[11px] font-bold">x{it.quantity || 1}</span>
+                                        </div>
+                                      ))}
+                                      <div className="text-[10px] text-slate-500 font-medium pt-0.5">মোট আইটেম: {ord.totalQuantity} টি</div>
+                                    </div>
+                                  );
+                                }
+                              } catch (e) {}
+                              return (
+                                <>
+                                  <div className="text-slate-200 font-semibold">{ord.productName}</div>
+                                  <div className="text-slate-500 text-[10px]">মোট পরিমাণ: {ord.totalQuantity} টি</div>
+                                </>
+                              );
+                            })()}
                           </td>
 
                           <td className="p-3.5">
