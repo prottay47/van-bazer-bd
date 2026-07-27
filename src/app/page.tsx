@@ -295,20 +295,22 @@ export default function RiktooStyleLandingPage() {
 
           {/* Main Title */}
           <h1 className="text-2xl md:text-3xl font-extrabold text-white leading-tight">
-            ঘরের সৌন্দর্য ও পরিচ্ছন্নতার জন্য প্রিমিয়াম 3D ডোর ম্যাট
+            প্রথম দেখাতেই ঘরের সৌন্দর্য বাড়িয়ে তুলুন
           </h1>
+
+          {/* Subtitle */}
+          <p className="text-purple-200 text-sm md:text-base font-semibold -mt-2">
+            প্রিমিয়াম 3D ডোর ম্যাট — সুন্দর, নিরাপদ ও পরিচ্ছন্ন ঘরের জন্য।
+          </p>
 
           {/* Bullet Points */}
           <div className="bg-purple-950/50 p-3.5 rounded-2xl border border-purple-500/30 text-left space-y-2 text-sm text-purple-100">
             {[
-              'প্রিমিয়াম কোয়ালিটির ম্যাট',
               'দ্রুত পানি শোষণ করে',
-              'অ্যান্টি-স্লিপ ব্যাকিং, তাই সহজে পিছলে যায় না',
+              'অ্যান্টি-স্লিপ ব্যাকিং',
               'ধুলো ও ময়লা আটকে রাখে',
-              'সহজে পানি দিয়ে পরিষ্কার করা যায়',
-              'রঙিন 3D ডিজাইন, ঘরের সৌন্দর্য বাড়ায়',
-              'বাথরুম, কিচেন, বেডরুম, প্রবেশদ্বারসহ বিভিন্ন জায়গায় ব্যবহার করা যায়',
-              'টেকসই এবং দীর্ঘদিন ব্যবহার উপযোগী',
+              'সহজে পরিষ্কার করা যায়',
+              'টেকসই ও দীর্ঘস্থায়ী',
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-2">
                 <Check className="w-5 h-5 text-emerald-400 font-bold shrink-0 mt-0.5" />
@@ -321,7 +323,7 @@ export default function RiktooStyleLandingPage() {
           {/* Pricing Highlight Box */}
           <div className="bg-amber-400 text-purple-950 p-3.5 rounded-2xl font-extrabold text-sm md:text-base shadow-lg space-y-1">
             <p className="flex items-center justify-center gap-1">
-              <span>🔥 এ সপ্তাহের সেরা অফার_</span>
+              <span>🔥 মাত্র ৩ দিনের বিশেষ অফার</span>
             </p>
             <p className="text-lg md:text-xl text-purple-900">
               বর্ডার সেলাই করা মাত্র <span className="text-rose-700 underline underline-offset-2">২৫০ টাকা</span> পিস
@@ -331,15 +333,15 @@ export default function RiktooStyleLandingPage() {
           {/* Feature Badges */}
           <div className="grid grid-cols-3 gap-2">
             {[
-              { icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />, label: 'Anti Slip' },
-              { icon: <Droplets className="w-4 h-4 text-sky-400" />, label: 'Water Absorb' },
-              { icon: <Sparkles className="w-4 h-4 text-amber-400" />, label: '3D Premium' },
-              { icon: <RotateCcw className="w-4 h-4 text-rose-400" />, label: 'Easy Wash' },
-              { icon: <Check className="w-4 h-4 text-emerald-400" />, label: 'Eco Friendly' },
-              { icon: <Truck className="w-4 h-4 text-purple-300" />, label: 'Fast Delivery' },
+              { emoji: '🛡️', label: 'অ্যান্টি-স্লিপ' },
+              { emoji: '💧', label: 'দ্রুত পানি শোষণ' },
+              { emoji: '✨', label: 'প্রিমিয়াম 3D' },
+              { emoji: '🧼', label: 'সহজে পরিষ্কার' },
+              { emoji: '🌱', label: 'পরিবেশবান্ধব' },
+              { emoji: '🚚', label: 'দ্রুত ডেলিভারি' },
             ].map((badge, i) => (
               <span key={i} className="bg-purple-900/80 border border-purple-400/50 text-purple-100 text-xs px-2 py-2 rounded-xl font-bold flex flex-col items-center gap-1 text-center">
-                {badge.icon}
+                <span className="text-xl leading-none">{badge.emoji}</span>
                 {badge.label}
               </span>
             ))}
