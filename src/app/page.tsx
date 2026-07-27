@@ -363,7 +363,7 @@ export default function RiktooStyleLandingPage() {
               className="w-full bg-purple-950/90 border border-purple-400 hover:bg-purple-900 text-white font-bold py-3 px-6 rounded-2xl text-center block text-base shadow flex items-center justify-center gap-2"
             >
               <PhoneCall className="w-5 h-5 text-emerald-400" />
-              <span>📞 কল করুন: {CALL_NUMBER}</span>
+              <span>📞 অর্ডার করতে কল করুন</span>
             </a>
           </div>
         </div>
@@ -726,7 +726,7 @@ export default function RiktooStyleLandingPage() {
           className="flex-1 bg-purple-950 border border-purple-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5"
         >
           <PhoneCall className="w-4 h-4 text-emerald-400" />
-          <span>কল করুন</span>
+          <span>অর্ডার করতে কল করুন</span>
         </a>
 
         <button
