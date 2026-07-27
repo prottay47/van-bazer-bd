@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { trackMetaPurchase } from '@/components/MetaPixel';
@@ -429,67 +429,37 @@ export default function RiktooStyleLandingPage() {
           </div>
         </div>
 
-        {/* Features Cards Section - "কেন আমাদের 3D ফ্লোর ম্যাট নিবেন?" */}
+        {/* Features Cards Section */}
         <div className="space-y-4 pt-4">
-          <div className="bg-purple-200/90 text-purple-950 text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-purple-400 shadow">
+          <div className="bg-purple-200/90 text-purple-950 text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-purple-400 shadow anim-fadeInDown">
             কেন আমাদের 3D ফ্লোর ম্যাট নিবেন?
           </div>
 
           <div className="space-y-3">
-            {/* Card 1 */}
-            <div className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 space-y-1.5">
-              <div className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center mb-1 font-bold text-lg">
-                💧
+            {[
+              { icon: '💧', title: 'পানিশোষক পাপোস', desc: 'বাথরুমের সামনে পানি পড়ে স্যাঁতস্যাঁতে হয়ে থাকে? পা রাখতে খারাপ লাগে? আমাদের এই ম্যাট দ্রুত পানি শোষণ করতে সক্ষম।' },
+              { icon: '🛡️', title: '১০০% নন-স্লিপার', desc: 'এটি ব্যবহার করলে স্লিপ খেয়ে পড়ে যাওয়ার কোনো ভয় নেই। এটি মেঝেতে শক্তভাবে কামড়ে থাকে এবং সহজে সরে যায় না।' },
+              { icon: '✨', title: 'ইউনিক 3D ডিজাইন', desc: 'আধুনিক ও স্টাইলিশ ইউনিক ডিজাইনের এই ম্যাটগুলো আপনার বাথরুমের সৌন্দর্য অনেক গুণ বাড়িয়ে দিবে।' },
+              { icon: '💵', title: 'আগে প্রোডাক্ট পরে টাকা', desc: 'আমরা দিচ্ছি অগ্রিম এক টাকা ছাড়াও সারা বাংলাদেশে ক্যাশ অন হোম ডেলিভারির সুবিধা।' },
+              { icon: '✅', title: 'কোয়ালিটি গ্যারান্টি', desc: 'ডেলিভারি ম্যান থাকা অবস্থায় কোয়ালিটি দেখে নিতে পারবেন। ভালো না লাগলে ডেলিভারি চার্জ দিয়ে রিটার্ন করার সুযোগ।' },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 card-hover anim-slideInLeft"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className="flex items-center gap-3 mb-1.5">
+                  <div
+                    className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center shrink-0 font-bold text-xl anim-float"
+                    style={{ animationDelay: `${i * 0.3}s` }}
+                  >
+                    {card.icon}
+                  </div>
+                  <h3 className="text-base font-extrabold text-purple-950">{card.title}</h3>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed pl-1">{card.desc}</p>
               </div>
-              <h3 className="text-base font-extrabold text-purple-950">পানিশোষক পাপোস</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                বাথরুমের সামনে পানি পড়ে স্যাঁতস্যাঁতে হয়ে থাকে? পা রাখতে খারাপ লাগে? আমাদের এই ম্যাট দ্রুত পানি শোষণ করতে সক্ষম।
-              </p>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 space-y-1.5">
-              <div className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center mb-1 font-bold text-lg">
-                🛡️
-              </div>
-              <h3 className="text-base font-extrabold text-purple-950">১০০% নন-স্লিপার</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                এটি ব্যবহার করলে স্লিপ খেয়ে পড়ে যাওয়ার কোনো ভয় নেই। এটি মেঝেতে শক্তভাবে কামড়ে থাকে এবং সহজে সরে যায় না।
-              </p>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 space-y-1.5">
-              <div className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center mb-1 font-bold text-lg">
-                ✨
-              </div>
-              <h3 className="text-base font-extrabold text-purple-950">ইউনিক 3D ডিজাইন</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                আধুনিক ও স্টাইলিশ ইউনিক ডিজাইনের এই ম্যাটগুলো আপনার বাথরুমের সৌন্দর্য অনেক গুণ বাড়িয়ে দিবে।
-              </p>
-            </div>
-
-            {/* Card 4 */}
-            <div className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 space-y-1.5">
-              <div className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center mb-1 font-bold text-lg">
-                💵
-              </div>
-              <h3 className="text-base font-extrabold text-purple-950">আগে প্রোডাক্ট পরে টাকা</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                আমরা দিচ্ছি অগ্রিম এক টাকা ছাড়াও সারা বাংলাদেশে ক্যাশ অন হোম ডেলিভারির সুবিধা।
-              </p>
-            </div>
-
-            {/* Card 5 */}
-            <div className="bg-white text-slate-900 p-4 rounded-2xl shadow-xl border-2 border-purple-300 space-y-1.5">
-              <div className="w-10 h-10 bg-purple-100 text-purple-800 rounded-xl flex items-center justify-center mb-1 font-bold text-lg">
-                ✅
-              </div>
-              <h3 className="text-base font-extrabold text-purple-950">কোয়ালিটি গ্যারান্টি</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                ডেলিভারি ম্যান থাকা অবস্থায় কোয়ালিটি দেখে নিতে পারবেন। ভালো না লাগলে ডেলিভারি চার্জ দিয়ে রিটার্ন করার সুযোগ।
-              </p>
-            </div>
+            ))}
           </div>
         </div>
 
