@@ -115,18 +115,7 @@ export default function RiktooStyleLandingPage() {
     });
   };
 
-  const [designList, setDesignList] = useState<ProductDesign[]>(DESIGN_LIST);
 
-  useEffect(() => {
-    fetch('/api/products')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.products && data.products.length > 0) {
-          setDesignList(data.products);
-        }
-      })
-      .catch((err) => console.error('Error loading products:', err));
-  }, []);
 
   // Calculate Order Totals
   const selectedList = designList.filter((d) => selectedItems[d.id]?.selected);
