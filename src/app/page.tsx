@@ -512,8 +512,9 @@ export default function RiktooStyleLandingPage() {
 
                 <div className="space-y-1 py-0.5">
                   <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 leading-tight">{mat.title}</h3>
-                  <div className="flex items-baseline justify-center gap-2">
+                  <div className="flex items-center justify-center gap-1.5 flex-wrap">
                     <span className="text-xs text-rose-200/80 line-through font-semibold">৳{mat.regularPrice}</span>
+                    <span className="text-xs font-bold text-amber-200">এখন মাত্র</span>
                     <span className="text-base md:text-xl font-black text-[#FBBF24] drop-shadow-md">৳{mat.offerPrice}</span>
                   </div>
                 </div>
@@ -582,6 +583,24 @@ export default function RiktooStyleLandingPage() {
           </div>
         </div>
 
+        {/* Trust Section before Order Form */}
+        <div className="bg-gradient-to-r from-[#14532D] to-[#15803D] border-2 border-emerald-400/60 rounded-3xl p-4 text-white shadow-xl text-center anim-fadeInUp">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs md:text-sm font-bold text-emerald-100">
+            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+              <span className="text-emerald-400 font-black text-sm">✅</span>
+              <span>Cash on Delivery</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+              <span className="text-emerald-400 font-black text-sm">✅</span>
+              <span>সারা বাংলাদেশে ডেলিভারি</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+              <span className="text-emerald-400 font-black text-sm">✅</span>
+              <span>অর্ডার কনফার্ম করে পাঠানো হবে</span>
+            </div>
+          </div>
+        </div>
+
         {/* Checkout Order Form Section - "কোন কোন ডিজাইন নিবেন এখানে সিলেক্ট করুন" */}
         <div id="checkout-section" className="bg-[#14532D] border-2 border-green-400 rounded-3xl p-4 md:p-6 shadow-2xl space-y-6">
           
@@ -638,8 +657,9 @@ export default function RiktooStyleLandingPage() {
                         <h4 className="text-xs md:text-sm font-bold text-white leading-snug break-words">
                           {mat.title}
                         </h4>
-                        <div className="flex items-baseline gap-2">
+                        <div className="flex items-baseline gap-1.5 flex-wrap">
                           <span className="text-xs text-rose-200/80 line-through font-semibold">৳{mat.regularPrice}</span>
+                          <span className="text-xs font-bold text-amber-200">এখন মাত্র</span>
                           <span className="text-sm md:text-base font-black text-[#FBBF24]">৳{mat.offerPrice}</span>
                         </div>
                       </div>
