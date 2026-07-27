@@ -61,28 +61,13 @@ const DESIGN_LIST: ProductDesign[] = [
     regularPrice: 450,
     offerPrice: 250,
     image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'mat_19',
-    code: 'Code: 19',
-    title: '3D Floor Mat Code-19 (গোল্ডেন বাটারফ্লাই)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=800&auto=format&fit=crop&q=80',
-  },
-];
-
 export default function RiktooStyleLandingPage() {
+  const [designList, setDesignList] = useState<ProductDesign[]>([]);
+
   // Selected items state: object mapping design ID to { selected: boolean, quantity: number }
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: { selected: boolean; quantity: number };
-  }>({
-    mat_1: { selected: true, quantity: 1 },
-    mat_2: { selected: false, quantity: 1 },
-    mat_9: { selected: false, quantity: 1 },
-    mat_18: { selected: false, quantity: 1 },
-    mat_19: { selected: false, quantity: 1 },
-  });
+  }>({});
 
   const [deliveryZone, setDeliveryZone] = useState<'inside_dhaka' | 'outside_dhaka'>('inside_dhaka');
   
@@ -354,18 +339,20 @@ export default function RiktooStyleLandingPage() {
         </div>
 
         {/* Featured Code Display Image */}
-        <div className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] rounded-3xl p-3 border-2 border-purple-500/40 shadow-xl overflow-hidden text-center space-y-2">
-          <div className="relative rounded-2xl overflow-hidden border border-purple-400/30">
-            <img
-              src={DESIGN_LIST[2].image}
-              alt="Code 09"
-              className="w-full aspect-[4/3] object-cover"
-            />
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-rose-600 text-white font-extrabold text-base px-4 py-1 rounded-xl shadow-lg border border-white/20">
-              Code: 09
+        {designList.length > 0 && (
+          <div className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] rounded-3xl p-3 border-2 border-purple-500/40 shadow-xl overflow-hidden text-center space-y-2">
+            <div className="relative rounded-2xl overflow-hidden border border-purple-400/30">
+              <img
+                src={designList[0].image}
+                alt={designList[0].code}
+                className="w-full aspect-[4/3] object-cover"
+              />
+              <div className="absolute top-3 left-1/2 transform -translate-x-1/2 bg-rose-600 text-white font-extrabold text-base px-4 py-1 rounded-xl shadow-lg border border-white/20">
+                {designList[0].code}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Product Gallery - "আপনার পছন্দের ডিজাইন গুলো বেছে নিন" */}
         <div className="space-y-4">
