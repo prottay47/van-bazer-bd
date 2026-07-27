@@ -44,9 +44,11 @@ interface Order {
   address: string;
   deliveryZone: string;
   productName: string;
-  productVariant: string;
-  quantity: number;
-  unitPrice: number;
+  productVariant?: string;
+  selectedItemsJson?: string;
+  totalQuantity?: number;
+  quantity?: number;
+  unitPrice?: number;
   deliveryCharge: number;
   totalPrice: number;
   status: 'Pending' | 'Confirmed' | 'Shipped' | 'Cancelled';
