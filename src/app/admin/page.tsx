@@ -1168,7 +1168,144 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+            {/* Mobile Order Cards View (block md:hidden) */}
+            <div className="block md:hidden space-y-3">
+              {filteredOrders.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 bg-slate-900 border border-slate-800 rounded-2xl">
+                  কোনো অর্ডার পাওয়া যায়নি!
+                </div>
+              ) : (
+                filteredOrders.map((ord) => (
+                  <div key={ord.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+                    {/* Top Header: Order #, Status Dropdown */}
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <div className="font-extrabold text-amber-400 font-mono text-sm">#{ord.orderNumber}</div>
+                        <div className="text-[11px] text-slate-500">
+                          {new Date(ord.createdAt).toLocaleString('bn-BD')}
+                        </div>
+                      </div>
+
+                      <select
+                        value={ord.status}
+                        onChange={(e) => handleStatusChange(ord.id, e.target.value)}
+                        disabled={updatingId === ord.id}
+                        className={`text-xs font-bold px-2.5 py-1 rounded-xl border outline-none cursor-pointer bg-slate-950 ${
+                          ord.status === 'Pending'
+                            ? 'text-amber-400 border-amber-500/50'
+                            : ord.status === 'Confirmed'
+                            ? 'text-sky-400 border-sky-500/50'
+                            : ord.status === 'Shipped'
+                            ? 'text-emerald-400 border-emerald-500/50'
+                            : ord.status === 'Incomplete'
+                            ? 'text-purple-400 border-purple-500/50'
+                            : 'text-rose-400 border-rose-500/50'
+                        }`}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Incomplete">Incomplete</option>
+                      </select>
+                    </div>
+
+                    {/* Customer & Contact Info */}
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-2 text-xs">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="font-bold text-white text-sm truncate">{ord.customerName}</span>
+                        <a
+                          href={`tel:${ord.phone}`}
+                          className="flex items-center gap-1 bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 px-2 py-1 rounded-lg font-mono font-bold hover:bg-emerald-600/30 transition shrink-0"
+                        >
+                          <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{ord.phone}</span>
+                        </a>
+                      </div>
+
+                      <div className="text-slate-300">
+                        <span className="text-slate-500 font-semibold">ঠিকানা:</span> {ord.address}
+                      </div>
+
+                      <div>
+                        <span className={`inline-block text-[10px] px-2 py-0.5 rounded font-semibold border ${
+                          ord.deliveryZone === 'inside_dhaka'
+                            ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                            : ord.deliveryZone === 'sub_dhaka'
+                            ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+                            : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                        }`}>
+                          {ord.deliveryZone === 'inside_dhaka'
+                            ? 'ঢাকার ভেতরে (৳70)'
+                            : ord.deliveryZone === 'sub_dhaka'
+                            ? 'ঢাকার সাব সিটি (৳100)'
+                            : 'ঢাকার বাইরে (৳130)'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Product Items Breakdown */}
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+                      <div className="text-[11px] text-slate-400 font-bold uppercase">সিলেক্ট করা প্রোডাক্টসমূহ:</div>
+                      {(() => {
+                        try {
+                          const items = JSON.parse(ord.selectedItemsJson || '[]');
+                          if (Array.isArray(items) && items.length > 0) {
+                            return (
+                              <div className="space-y-1.5 pt-0.5">
+                                {items.map((it: any, i: number) => (
+                                  <div key={i} className="text-xs font-semibold flex items-center justify-between gap-2 bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                                    <div className="flex items-center gap-1.5 min-w-0">
+                                      <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
+                                        {it.code || 'Code'}
+                                      </span>
+                                      <span className="text-slate-200 truncate">{it.title || ord.productName}</span>
+                                    </div>
+                                    <span className="text-amber-300 text-xs font-extrabold shrink-0">x{it.quantity || 1}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                        } catch (e) {}
+                        return (
+                          <div className="text-xs text-slate-200 font-semibold">{ord.productName} ({ord.totalQuantity} টি)</div>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Total Price & Delete Button */}
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-800/80">
+                      <div>
+                        <span className="text-[11px] text-slate-500 font-medium">মোট সার্ভিস সহ বিল:</span>
+                        <div className="text-lg font-black text-rose-400 leading-tight">৳{ord.totalPrice}</div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <a
+                          href={`tel:${ord.phone}`}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 shadow"
+                        >
+                          <PhoneCall className="w-3.5 h-3.5" />
+                          <span>কল</span>
+                        </a>
+                        <button
+                          onClick={() => handleDeleteOrder(ord.id)}
+                          disabled={updatingId === ord.id}
+                          className="p-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition"
+                          title="Delete Order"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Desktop Table View (hidden md:block) */}
+            <div className="hidden md:block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-300">
                   <thead className="bg-slate-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
