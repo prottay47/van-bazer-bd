@@ -475,7 +475,7 @@ export default function AdminDashboardPage() {
     { id: 'analytics', label: 'এনালাইটিক্স', icon: <BarChart3 className="w-5 h-5" /> },
     { id: 'products', label: 'প্রোডাক্টস', icon: <Layers className="w-5 h-5" />, badge: products.length },
     { id: 'orders', label: 'অর্ডার', icon: <ShoppingBag className="w-5 h-5" />, badge: orders.length },
-    { id: 'incomplete', label: 'অসমাপ্ত অর্ডার', icon: <AlertCircle className="w-5 h-5" />, badge: stats?.cancelledOrders || 0 },
+    { id: 'incomplete', label: 'অসমাপ্ত অর্ডার', icon: <AlertCircle className="w-5 h-5" />, badge: orders.filter(o => o.status === 'Incomplete' || o.status === 'Cancelled').length },
     { id: 'accounts', label: 'হিসাব', icon: <Wallet className="w-5 h-5" /> },
     { id: 'settings', label: 'সেটিংস', icon: <Settings className="w-5 h-5" /> },
   ];
@@ -1276,55 +1276,96 @@ export default function AdminDashboardPage() {
                 <AlertCircle className="w-7 h-7 text-amber-500" />
                 <span>অসমাপ্ত ও বাতিলকৃত অর্ডার তালিকা</span>
               </h1>
-              <p className="text-xs text-slate-400">যেসব কাস্টমার অর্ডার বাতিল করেছেন বা ফর্ম পুরোপুরি পূরণ করেননি (Follow-up list)</p>
+              <p className="text-xs text-slate-400">যেসব কাস্টমার ১১ ডিজিটের নম্বর দিয়েও অর্ডার ফর্ম সম্পূর্ণ করেননি বা পরবর্তীতে বাতিল করেছেন</p>
             </div>
 
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-              {orders.filter(o => o.status === 'Cancelled').length === 0 ? (
+              {orders.filter(o => o.status === 'Incomplete' || o.status === 'Cancelled').length === 0 ? (
                 <div className="text-center py-12 space-y-3">
                   <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
                   <h3 className="text-lg font-bold text-white">বর্তমানে কোনো বাতিল বা অসমাপ্ত অর্ডার নেই!</h3>
                   <p className="text-xs text-slate-400">সব অর্ডার সক্রিয় আছে</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <h3 className="text-sm font-bold text-slate-300">বাতিলকৃত অর্ডারসমূহ (Call Back Target):</h3>
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold text-slate-300">ফলো-আপ টার্গেট অর্ডারসমূহ (Call Back List):</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {orders.filter(o => o.status === 'Cancelled').map((ord) => (
-                      <div key={ord.id} className="bg-slate-950 border border-rose-500/30 p-4 rounded-xl space-y-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <span className="text-xs font-mono font-bold text-rose-400">#{ord.orderNumber}</span>
-                            <h4 className="font-bold text-white text-sm">{ord.customerName}</h4>
+                    {orders.filter(o => o.status === 'Incomplete' || o.status === 'Cancelled').map((ord) => {
+                      const isIncomplete = ord.status === 'Incomplete';
+                      return (
+                        <div key={ord.id} className="bg-slate-950 border border-amber-500/30 p-4 rounded-xl space-y-3 shadow-lg">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className="text-xs font-mono font-bold text-amber-400">#{ord.orderNumber}</span>
+                              <h4 className="font-bold text-white text-sm">{ord.customerName}</h4>
+                            </div>
+                            <span className={`text-[10px] px-2.5 py-1 rounded font-bold border ${
+                              isIncomplete
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                                : 'bg-rose-500/20 text-rose-400 border-rose-500/40'
+                            }`}>
+                              {isIncomplete ? '⚠️ অসমাপ্ত (Incomplete Draft)' : '❌ Cancelled'}
+                            </span>
                           </div>
-                          <span className="text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/40 px-2 py-0.5 rounded font-semibold">
-                            Cancelled
-                          </span>
-                        </div>
 
-                        <div className="text-xs text-slate-300 space-y-1">
-                          <div>ফোন: <a href={`tel:${ord.phone}`} className="text-emerald-400 font-mono underline">{ord.phone}</a></div>
-                          <div>ঠিকানা: {ord.address}</div>
-                          <div>আইটেম: {ord.productVariant} ({ord.quantity} টি) - ৳{ord.totalPrice}</div>
-                        </div>
+                          <div className="text-xs text-slate-300 space-y-1.5 bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-slate-400 font-semibold">মোবাইল:</span>
+                              <a href={`tel:${ord.phone}`} className="text-emerald-400 font-mono font-extrabold underline text-sm">{ord.phone}</a>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-semibold">ঠিকানা:</span> {ord.address || 'ঠিকানা দেওয়া হয়নি'}
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-semibold">সিলেক্ট করা প্রোডাক্ট:</span>
+                              {(() => {
+                                try {
+                                  const items = JSON.parse(ord.selectedItemsJson || '[]');
+                                  if (Array.isArray(items) && items.length > 0) {
+                                    return (
+                                      <div className="mt-1 space-y-1">
+                                        {items.map((it: any, i: number) => (
+                                          <div key={i} className="text-[11px] text-amber-200 font-medium">
+                                            • [{it.code || 'Item'}] {it.title} ({it.quantity || 1}টি)
+                                          </div>
+                                        ))}
+                                      </div>
+                                    );
+                                  }
+                                } catch (e) {}
+                                return <span className="text-slate-200 ml-1">{ord.productName} ({ord.totalQuantity}টি)</span>;
+                              })()}
+                            </div>
+                            <div className="font-bold text-emerald-400 pt-1">
+                              মোট আনুমানিক মূল্য: ৳{ord.totalPrice}
+                            </div>
+                          </div>
 
-                        <div className="flex gap-2 pt-2 border-t border-slate-900">
-                          <a
-                            href={`tel:${ord.phone}`}
-                            className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg text-center flex items-center justify-center gap-1.5"
-                          >
-                            <PhoneCall className="w-3.5 h-3.5" />
-                            <span>কল দিন</span>
-                          </a>
-                          <button
-                            onClick={() => handleStatusChange(ord.id, 'Pending')}
-                            className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2 rounded-lg text-center"
-                          >
-                            পুনরায় রিস্টোর করুন
-                          </button>
+                          <div className="flex gap-2 pt-1">
+                            <a
+                              href={`tel:${ord.phone}`}
+                              className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-lg text-center flex items-center justify-center gap-1.5 shadow"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5" />
+                              <span>কল দিন</span>
+                            </a>
+                            <button
+                              onClick={() => handleStatusChange(ord.id, 'Pending')}
+                              className="flex-1 bg-sky-700 hover:bg-sky-600 text-white text-xs font-semibold py-2 rounded-lg text-center shadow"
+                            >
+                              Pending এ রূপান্তর করুন
+                            </button>
+                            <button
+                              onClick={() => handleDeleteOrder(ord.id)}
+                              className="p-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 rounded-lg transition"
+                              title="Delete Draft"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { trackMetaPurchase } from '@/components/MetaPixel';
@@ -192,6 +192,37 @@ export default function RiktooStyleLandingPage() {
       elem.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Auto-track incomplete orders when an 11-digit phone number is entered
+  useEffect(() => {
+    const cleanPhone = phone.trim().replace(/\D/g, '');
+    if (cleanPhone.length === 11) {
+      const timer = setTimeout(() => {
+        const itemsPayload = selectedList.map((d) => ({
+          id: d.id,
+          code: d.code,
+          title: d.title,
+          price: d.offerPrice,
+          quantity: selectedItems[d.id]?.quantity || 1,
+        }));
+
+        fetch('/api/orders/incomplete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName,
+            phone,
+            address,
+            deliveryZone,
+            deliveryCharge,
+            selectedItems: itemsPayload,
+          }),
+        }).catch((err) => console.error('Incomplete tracking error:', err));
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [phone, customerName, address, deliveryZone, selectedItems]);
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();

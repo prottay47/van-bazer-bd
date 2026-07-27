@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { orders } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, eq, and } from 'drizzle-orm';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 const PRODUCT_DETAILS = {
@@ -75,6 +75,15 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     };
 
+    // Clean up any incomplete draft for this phone number
+    try {
+      await db
+        .delete(orders)
+        .where(and(eq(orders.phone, phone.trim()), eq(orders.status, 'Incomplete')));
+    } catch (e) {
+      console.error('Error cleaning incomplete draft:', e);
+    }
+
     await db.insert(orders).values(newOrder);
 
     return NextResponse.json({
@@ -102,18 +111,19 @@ export async function GET() {
 
     const totalOrders = allOrders.length;
     const totalRevenue = allOrders
-      .filter((o) => o.status !== 'Cancelled')
+      .filter((o) => o.status !== 'Cancelled' && o.status !== 'Incomplete')
       .reduce((sum, o) => sum + o.totalPrice, 0);
 
     const pendingOrders = allOrders.filter((o) => o.status === 'Pending').length;
     const confirmedOrders = allOrders.filter((o) => o.status === 'Confirmed').length;
     const shippedOrders = allOrders.filter((o) => o.status === 'Shipped').length;
     const cancelledOrders = allOrders.filter((o) => o.status === 'Cancelled').length;
+    const incompleteOrders = allOrders.filter((o) => o.status === 'Incomplete').length;
 
     const todayStr = new Date().toISOString().split('T')[0];
     const todayOrders = allOrders.filter((o) => o.createdAt.startsWith(todayStr));
     const todayRevenue = todayOrders
-      .filter((o) => o.status !== 'Cancelled')
+      .filter((o) => o.status !== 'Cancelled' && o.status !== 'Incomplete')
       .reduce((sum, o) => sum + o.totalPrice, 0);
 
     return NextResponse.json({
@@ -125,6 +135,7 @@ export async function GET() {
         confirmedOrders,
         shippedOrders,
         cancelledOrders,
+        incompleteOrders,
         todayOrdersCount: todayOrders.length,
         todayRevenue,
       },
