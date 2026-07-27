@@ -258,20 +258,68 @@ export default function RiktooStyleLandingPage() {
         @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
         @keyframes fadeInScale { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
         @keyframes floatY { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-8px); } }
-        @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
         @keyframes carouselFadeIn { from { opacity:0; transform:scale(1.04); } to { opacity:1; transform:scale(1); } }
         @keyframes slideInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
         @keyframes slideInRight { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
-        @keyframes pulseGlow { 0%,100% { box-shadow:0 0 0 0 rgba(20,83,45,0.6); } 50% { box-shadow:0 0 0 12px rgba(20,83,45,0); } }
+        
+        @keyframes pulseGlowGold {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7), 0 8px 25px rgba(0, 0, 0, 0.25);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 0 12px rgba(251, 191, 36, 0), 0 12px 35px rgba(251, 191, 36, 0.45);
+            transform: scale(1.025);
+          }
+        }
+
+        @keyframes pulseGlowCall {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(52, 211, 153, 0);
+            transform: scale(1.015);
+          }
+        }
+
+        @keyframes offerBoxPulse {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.8), 0 10px 30px rgba(245, 158, 11, 0.3);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 0 14px rgba(245, 158, 11, 0), 0 14px 40px rgba(245, 158, 11, 0.5);
+            transform: scale(1.03);
+          }
+        }
+
+        @keyframes phoneRing {
+          0%, 100% { transform: rotate(0deg) scale(1); }
+          10% { transform: rotate(-14deg) scale(1.15); }
+          20% { transform: rotate(14deg) scale(1.15); }
+          30% { transform: rotate(-10deg) scale(1.15); }
+          40% { transform: rotate(10deg) scale(1.15); }
+          50% { transform: rotate(0deg) scale(1); }
+        }
+
+        @keyframes shimmerLight {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
+        }
+
         .anim-fadeInDown { animation: fadeInDown 0.7s ease both; }
         .anim-fadeInUp { animation: fadeInUp 0.7s ease both; }
         .anim-fadeInScale { animation: fadeInScale 0.6s ease both; }
         .anim-float { animation: floatY 3s ease-in-out infinite; }
         .anim-slideInLeft { animation: slideInLeft 0.6s ease both; }
         .anim-slideInRight { animation: slideInRight 0.6s ease both; }
-        .anim-pulseGlow { animation: pulseGlow 2s ease-in-out infinite; }
-        .carousel-img-in { animation: carouselFadeIn 0.4s ease both; }
-        .carousel-img-out { opacity: 0; transform: scale(1.04); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .anim-pulseGlowGold { animation: pulseGlowGold 2.2s ease-in-out infinite; }
+        .anim-pulseGlowCall { animation: pulseGlowCall 2s ease-in-out infinite; }
+        .anim-offerBoxPulse { animation: offerBoxPulse 2.5s ease-in-out infinite; }
+        .anim-phoneRing { animation: phoneRing 2.5s ease-in-out infinite; }
+        .anim-shimmerLight { animation: shimmerLight 3s infinite; }
         .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
         .card-hover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(20,83,45,0.35); }
       `}</style>
@@ -325,12 +373,14 @@ export default function RiktooStyleLandingPage() {
 
 
           {/* Pricing Highlight Box */}
-          <div className="bg-amber-400 text-green-950 p-3.5 rounded-2xl font-extrabold text-sm md:text-base shadow-lg space-y-1">
-            <p className="flex items-center justify-center gap-1">
-              <span>🔥 মাত্র ৩ দিনের বিশেষ অফার</span>
+          <div className="bg-[#FBBF24] text-green-950 p-4 rounded-2xl font-extrabold text-sm md:text-base border-2 border-amber-300 space-y-1 relative overflow-hidden anim-offerBoxPulse">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent anim-shimmerLight pointer-events-none" />
+            <p className="flex items-center justify-center gap-1.5 text-base md:text-lg">
+              <span className="animate-bounce">🔥</span>
+              <span>মাত্র ৩ দিনের বিশেষ অফার</span>
             </p>
-            <p className="text-lg md:text-xl text-green-900">
-              বর্ডার সেলাই করা মাত্র <span className="text-rose-700 underline underline-offset-2">২৫০ টাকা</span> পিস
+            <p className="text-lg md:text-2xl text-green-950 font-black">
+              বর্ডার সেলাই করা মাত্র <span className="text-rose-700 underline underline-offset-4 decoration-2">২৫০ টাকা</span> পিস
             </p>
           </div>
 
@@ -344,7 +394,7 @@ export default function RiktooStyleLandingPage() {
               { emoji: '🌱', label: 'পরিবেশবান্ধব' },
               { emoji: '🚚', label: 'দ্রুত ডেলিভারি' },
             ].map((badge, i) => (
-              <span key={i} className="bg-green-900/80 border border-green-400/50 text-green-100 text-xs px-2 py-2 rounded-xl font-bold flex flex-col items-center gap-1 text-center">
+              <span key={i} className="bg-green-900/80 border border-green-400/50 text-green-100 text-xs px-2 py-2 rounded-xl font-bold flex flex-col items-center gap-1 text-center hover:scale-105 transition">
                 <span className="text-xl leading-none">{badge.emoji}</span>
                 {badge.label}
               </span>
@@ -356,17 +406,18 @@ export default function RiktooStyleLandingPage() {
           <div className="space-y-3 pt-2">
             <button
               onClick={() => scrollToCheckout()}
-              className="w-full bg-white hover:bg-slate-100 text-green-950 font-extrabold text-lg md:text-xl py-3.5 px-6 rounded-2xl shadow-xl shadow-green-950/50 transition transform hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full bg-white hover:bg-slate-100 text-green-950 font-black text-lg md:text-xl py-3.5 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowGold relative overflow-hidden group cursor-pointer"
             >
-              <ShoppingBag className="w-6 h-6 text-green-700" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent anim-shimmerLight pointer-events-none" />
+              <ShoppingBag className="w-6 h-6 text-green-700 animate-bounce" />
               <span>🛒 আজই অর্ডার করুন</span>
             </button>
 
             <a
               href={`tel:${callNumber}`}
-              className="w-full bg-green-950/90 border border-green-400 hover:bg-green-900 text-white font-bold py-3 px-6 rounded-2xl text-center block text-base shadow flex items-center justify-center gap-2"
+              className="w-full bg-green-950/90 border-2 border-emerald-400 hover:bg-green-900 text-white font-extrabold py-3 px-6 rounded-2xl text-center block text-base shadow-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowCall"
             >
-              <PhoneCall className="w-5 h-5 text-emerald-400" />
+              <PhoneCall className="w-5 h-5 text-emerald-400 anim-phoneRing shrink-0" />
               <span>📞 অর্ডার করতে কল করুন</span>
             </a>
           </div>
@@ -453,9 +504,9 @@ export default function RiktooStyleLandingPage() {
 
                 <button
                   onClick={() => scrollToCheckout(mat.id)}
-                  className="w-full bg-green-950 hover:bg-green-900 border border-green-400 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1 transition anim-pulseGlow"
+                  className="w-full bg-[#FBBF24] hover:bg-amber-300 text-green-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow anim-pulseGlowGold border border-amber-300"
                 >
-                  <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
+                  <ShoppingBag className="w-4 h-4 text-green-950 animate-bounce" />
                   <span>অর্ডার করুন</span>
                 </button>
               </div>
@@ -724,13 +775,14 @@ export default function RiktooStyleLandingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white hover:bg-slate-100 text-green-950 font-extrabold text-lg py-4 px-6 rounded-2xl shadow-xl transition transform hover:scale-[1.01] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-[#FBBF24] hover:bg-amber-300 text-green-950 font-black text-lg py-4 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 anim-pulseGlowGold relative overflow-hidden cursor-pointer border-2 border-amber-300"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent anim-shimmerLight pointer-events-none" />
               {loading ? (
                 <span>অর্ডার সাবমিট হচ্ছে...</span>
               ) : (
                 <>
-                  <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                  <CheckCircle2 className="w-6 h-6 text-green-950" />
                   <span>অর্ডার কনফার্ম করুন (৳{grandTotal})</span>
                 </>
               )}
@@ -748,17 +800,17 @@ export default function RiktooStyleLandingPage() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#15803D] border-t-2 border-green-400 p-2.5 flex gap-2 z-40 shadow-2xl">
         <a
           href={`tel:${callNumber}`}
-          className="flex-1 bg-green-950 border border-green-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5"
+          className="flex-1 bg-green-950 border border-emerald-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 anim-pulseGlowCall"
         >
-          <PhoneCall className="w-4 h-4 text-emerald-400" />
+          <PhoneCall className="w-4 h-4 text-emerald-400 anim-phoneRing" />
           <span>অর্ডার করতে কল করুন</span>
         </a>
 
         <button
           onClick={() => scrollToCheckout()}
-          className="flex-1 bg-white text-green-950 font-extrabold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow"
+          className="flex-1 bg-[#FBBF24] text-green-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow anim-pulseGlowGold border border-amber-300"
         >
-          <ShoppingBag className="w-4 h-4 text-green-700" />
+          <ShoppingBag className="w-4 h-4 text-green-950 animate-bounce" />
           <span>আজই অর্ডার করুন</span>
         </button>
       </div>
