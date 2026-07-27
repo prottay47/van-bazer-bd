@@ -110,6 +110,18 @@ export default function AdminDashboardPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
+  // Edit Product Modal State
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editProductCode, setEditProductCode] = useState('');
+  const [editProductTitle, setEditProductTitle] = useState('');
+  const [editProductRegularPrice, setEditProductRegularPrice] = useState(450);
+  const [editProductOfferPrice, setEditProductOfferPrice] = useState(250);
+  const [editProductImage, setEditProductImage] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [editUploadingImage, setEditUploadingImage] = useState(false);
+  const [editUploadSuccess, setEditUploadSuccess] = useState(false);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -327,6 +339,76 @@ export default function AdminDashboardPage() {
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
     router.push('/admin/login');
+  };
+
+  const handleOpenEdit = (p: Product) => {
+    setEditingProduct(p);
+    setEditProductCode(p.code);
+    setEditProductTitle(p.title);
+    setEditProductRegularPrice(p.regularPrice);
+    setEditProductOfferPrice(p.offerPrice);
+    setEditProductImage(p.image);
+    setEditUploadSuccess(false);
+    setShowEditProductModal(true);
+  };
+
+  const handleEditFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEditUploadingImage(true);
+    setEditUploadSuccess(false);
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setEditProductImage(data.url);
+        setEditUploadSuccess(true);
+      } else {
+        alert(data.error || 'ফাইল আপলোড ব্যর্থ হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('ছবি আপলোড করতে সমস্যা হয়েছে');
+    } finally {
+      setEditUploadingImage(false);
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingProduct) return;
+    if (!editProductCode.trim() || !editProductTitle.trim() || !editProductImage) {
+      alert('কোড, টাইটেল এবং ছবি আবশ্যক');
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const res = await fetch(`/api/products/${editingProduct.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: editProductCode.trim(),
+          title: editProductTitle.trim(),
+          regularPrice: editProductRegularPrice,
+          offerPrice: editProductOfferPrice,
+          image: editProductImage,
+        }),
+      });
+      if (res.ok) {
+        setShowEditProductModal(false);
+        setEditingProduct(null);
+        fetchProductsData();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'প্রোডাক্ট আপডেট করতে সমস্যা হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('প্রোডাক্ট আপডেট করতে সমস্যা হয়েছে');
+    } finally {
+      setSavingEdit(false);
+    }
   };
 
   const handleExportCSV = () => {
@@ -781,6 +863,122 @@ export default function AdminDashboardPage() {
               </div>
             )}
 
+            {/* Edit Product Modal */}
+            {showEditProductModal && editingProduct && (
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Edit className="w-5 h-5 text-blue-400" />
+                      প্রোডাক্ট এডিট করুন
+                    </h2>
+                    <button onClick={() => setShowEditProductModal(false)} className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400">
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1 text-sm">প্রোডাক্ট কোড</label>
+                      <input
+                        type="text"
+                        required
+                        value={editProductCode}
+                        onChange={(e) => setEditProductCode(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-blue-500 text-sm"
+                        placeholder="যেমন: Code-01"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1 text-sm">প্রোডাক্টের নাম / টাইটেল</label>
+                      <input
+                        type="text"
+                        required
+                        value={editProductTitle}
+                        onChange={(e) => setEditProductTitle(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-blue-500 text-sm"
+                        placeholder="যেমন: 3D Floor Mat (Code-01)"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1 text-sm">অফার প্রাইস (৳)</label>
+                        <input
+                          type="number"
+                          required
+                          value={editProductOfferPrice}
+                          onChange={(e) => setEditProductOfferPrice(Number(e.target.value))}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-blue-500 font-bold text-emerald-400 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1 text-sm">রেগুলার প্রাইস (৳)</label>
+                        <input
+                          type="number"
+                          required
+                          value={editProductRegularPrice}
+                          onChange={(e) => setEditProductRegularPrice(Number(e.target.value))}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-blue-500 text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Image Section */}
+                    <div className="space-y-2 pt-1 border-t border-slate-800">
+                      <label className="block text-slate-300 font-semibold text-sm">প্রোডাক্টের ছবি পরিবর্তন করুন</label>
+                      <div className="flex items-center gap-3">
+                        <label className="flex-1 bg-slate-950 border border-dashed border-blue-500/50 hover:border-blue-500 p-3 rounded-xl cursor-pointer transition flex items-center justify-center gap-2 text-slate-300 hover:text-white text-sm">
+                          <ImageIcon className="w-4 h-4 text-blue-400" />
+                          <span className="font-semibold">{editUploadingImage ? 'WebP তে কনভার্ট হচ্ছে...' : 'নতুন ছবি আপলোড করুন'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleEditFileUpload}
+                            disabled={editUploadingImage}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+
+                      {editUploadSuccess && (
+                        <div className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>ছবিটি সফলভাবে .WebP ফরম্যাটে রূপান্তর করা হয়েছে!</span>
+                        </div>
+                      )}
+
+                      {editProductImage && (
+                        <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={editProductImage} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-3 flex gap-2 justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setShowEditProductModal(false)}
+                        className="px-4 py-2.5 bg-slate-800 text-slate-300 font-semibold rounded-xl text-sm"
+                      >
+                        বাতিল
+                      </button>
+                      <button
+                        onClick={handleSaveEdit}
+                        disabled={savingEdit || editUploadingImage}
+                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 disabled:opacity-50 text-sm flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {savingEdit ? 'সেভ হচ্ছে...' : 'পরিবর্তন সেভ করুন'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Product Search & Filter */}
             <div className="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <div className="relative w-full md:w-80">
@@ -846,6 +1044,13 @@ export default function AdminDashboardPage() {
                         }`}
                       >
                         {stockBool ? 'স্টক আউট করুন' : 'স্টক ইন করুন'}
+                      </button>
+                      <button
+                        onClick={() => handleOpenEdit(p)}
+                        className="p-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/30 rounded-xl transition"
+                        title="এডিট করুন"
+                      >
+                        <Edit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
