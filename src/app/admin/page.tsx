@@ -32,7 +32,8 @@ import {
   Edit,
   Tag,
   Check,
-  Eye
+  Eye,
+  Image as ImageIcon
 } from 'lucide-react';
 
 interface Order {
@@ -70,65 +71,8 @@ interface Product {
   regularPrice: number;
   offerPrice: number;
   image: string;
-  inStock: boolean;
+  inStock: boolean | number;
 }
-
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: 'mat_1',
-    code: 'Code: 01',
-    title: '3D Floor Mat Code-1 (বর্ডার সেলাই করা)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-  {
-    id: 'mat_2',
-    code: 'Code: 02',
-    title: '3D Floor Mat Code-2 (বর্ডার সেলাই করা)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-  {
-    id: 'mat_9',
-    code: 'Code: 09',
-    title: '3D Floor Mat Code-09 (রেড ফ্লাওয়ার 3D)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-  {
-    id: 'mat_18',
-    code: 'Code: 18',
-    title: '3D Floor Mat Code-18 (রয়েল ব্লু রোজ)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-  {
-    id: 'mat_24',
-    code: 'Code: 24',
-    title: '3D Floor Mat Code-24 (গোল্ডেন মোজাইক)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-  {
-    id: 'mat_35',
-    code: 'Code: 35',
-    title: '3D Floor Mat Code-35 (মার্বেল টেক্সচার)',
-    regularPrice: 450,
-    offerPrice: 250,
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80',
-    inStock: true,
-  },
-];
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'incomplete' | 'accounts' | 'settings'>('analytics');
@@ -136,17 +80,25 @@ export default function AdminDashboardPage() {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [productSearch, setProductSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
+  // Add Product Modal State
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [newProductCode, setNewProductCode] = useState('');
+  const [newProductTitle, setNewProductTitle] = useState('');
+  const [newProductRegularPrice, setNewProductRegularPrice] = useState(450);
+  const [newProductOfferPrice, setNewProductOfferPrice] = useState(250);
+  const [newProductImage, setNewProductImage] = useState('');
+  const [addingProduct, setAddingProduct] = useState(false);
+
   // Settings state
   const [dhakaDelivery, setDhakaDelivery] = useState(70);
   const [outsideDelivery, setOutsideDelivery] = useState(130);
-  const [productPrice, setProductPrice] = useState(250);
   const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345');
   const [saveSuccess, setSaveSuccess] = useState('');
 
@@ -170,8 +122,21 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const fetchProductsData = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      if (data.products) {
+        setProducts(data.products.map((p: any) => ({ ...p, inStock: Boolean(p.inStock) })));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchDashboardData();
+    fetchProductsData();
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
@@ -210,10 +175,62 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleToggleStock = (productId: string) => {
-    setProducts(prev =>
-      prev.map(p => (p.id === productId ? { ...p, inStock: !p.inStock } : p))
-    );
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProductCode || !newProductTitle || !newProductImage) {
+      alert('দয়া করে কোড, নাম এবং ছবির ইউআরএল লিখুন');
+      return;
+    }
+    setAddingProduct(true);
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: newProductCode,
+          title: newProductTitle,
+          regularPrice: newProductRegularPrice,
+          offerPrice: newProductOfferPrice,
+          image: newProductImage,
+        }),
+      });
+      if (res.ok) {
+        setShowAddProductModal(false);
+        setNewProductCode('');
+        setNewProductTitle('');
+        setNewProductImage('');
+        fetchProductsData();
+      } else {
+        alert('প্রোডাক্ট যুক্ত করতে সমস্যা হয়েছে');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAddingProduct(false);
+    }
+  };
+
+  const handleToggleStock = async (productId: string, currentStock: boolean | number) => {
+    try {
+      await fetch(`/api/products/${productId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inStock: currentStock ? 0 : 1 }),
+      });
+      fetchProductsData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('আপনি কি নিশ্চিত যে এই প্রোডাক্ট ভেরিয়েন্টটি ডিলেট করতে চান?')) return;
+    try {
+      await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+      fetchProductsData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleLogout = async () => {
@@ -362,7 +379,10 @@ export default function AdminDashboardPage() {
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800 space-y-2">
           <button
-            onClick={fetchDashboardData}
+            onClick={() => {
+              fetchDashboardData();
+              fetchProductsData();
+            }}
             className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-950 border border-slate-800 hover:bg-slate-800/80 text-slate-300 text-xs font-semibold rounded-xl transition"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -537,17 +557,115 @@ export default function AdminDashboardPage() {
                   <Layers className="w-7 h-7 text-emerald-400" />
                   <span>প্রোডাক্ট ভেরিয়েন্ট ক্যাটালগ</span>
                 </h1>
-                <p className="text-xs text-slate-400">আপনার ডোর ম্যাটের ৩ডি ডিজাইন, প্রাইসিং ও স্টক ব্যবস্থাপনা</p>
+                <p className="text-xs text-slate-400">আপনার ডোর ম্যাটের ৩ডি ডিজাইন, প্রাইসিং ও স্টক কাস্টমাইজেশন</p>
               </div>
 
               <button
-                onClick={() => alert('নতুন ভেরিয়েন্ট শীঘ্রই যোগ করা যাবে!')}
-                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-2 text-xs font-bold shadow-lg shadow-rose-600/20 self-start md:self-auto"
+                onClick={() => setShowAddProductModal(true)}
+                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition flex items-center gap-2 text-xs font-bold shadow-lg shadow-rose-600/20 self-start md:self-auto cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>নতুন ভেরিয়েন্ট যোগ করুন</span>
               </button>
             </div>
+
+            {/* Add Product Modal */}
+            {showAddProductModal && (
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Plus className="w-5 h-5 text-rose-500" />
+                      <span>নতুন প্রোডাক্ট যোগ করুন</span>
+                    </h3>
+                    <button
+                      onClick={() => setShowAddProductModal(false)}
+                      className="p-1 text-slate-400 hover:text-white"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleAddProduct} className="space-y-3 text-xs">
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1">প্রোডাক্ট কোড (যেমন: Code: 05)</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Code: 05"
+                        value={newProductCode}
+                        onChange={(e) => setNewProductCode(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1">প্রোডাক্টের নাম (Title)</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="3D Floor Mat Code-05 (রোজ ডিজাইন)"
+                        value={newProductTitle}
+                        onChange={(e) => setNewProductTitle(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1">অফার প্রাইস (৳)</label>
+                        <input
+                          type="number"
+                          required
+                          value={newProductOfferPrice}
+                          onChange={(e) => setNewProductOfferPrice(Number(e.target.value))}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500 font-bold text-emerald-400"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1">রেগুলার প্রাইস (৳)</label>
+                        <input
+                          type="number"
+                          required
+                          value={newProductRegularPrice}
+                          onChange={(e) => setNewProductRegularPrice(Number(e.target.value))}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1">ছবির ইউআরএল (Image URL)</label>
+                      <input
+                        type="url"
+                        required
+                        placeholder="https://images.unsplash.com/..."
+                        value={newProductImage}
+                        onChange={(e) => setNewProductImage(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-rose-500 font-mono text-[11px]"
+                      />
+                    </div>
+
+                    <div className="pt-3 flex gap-2 justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setShowAddProductModal(false)}
+                        className="px-4 py-2.5 bg-slate-800 text-slate-300 font-semibold rounded-xl"
+                      >
+                        বাতিল
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={addingProduct}
+                        className="px-5 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl shadow-lg shadow-rose-600/20 disabled:opacity-50"
+                      >
+                        {addingProduct ? 'সংরক্ষণ হচ্ছে...' : 'সেভ করুন'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Product Search & Filter */}
             <div className="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-slate-800">
@@ -563,66 +681,69 @@ export default function AdminDashboardPage() {
               </div>
 
               <span className="text-xs text-slate-400 font-semibold hidden md:inline">
-                মোট {filteredProducts.length} টি ভেরিয়েন্ট সক্রিয়
+                মোট {filteredProducts.length} টি ভেরিয়েন্ট প্রদর্শিত
               </span>
             </div>
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {filteredProducts.map((p) => (
-                <div key={p.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
-                  <div className="space-y-3">
-                    {/* Product Image */}
-                    <div className="relative h-44 w-full bg-slate-950">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                      <div className="absolute top-3 left-3 bg-purple-950/90 border border-purple-400/50 text-purple-200 text-xs font-mono font-bold px-2.5 py-1 rounded-lg">
-                        {p.code}
+              {filteredProducts.map((p) => {
+                const stockBool = Boolean(p.inStock);
+                return (
+                  <div key={p.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between">
+                    <div className="space-y-3">
+                      {/* Product Image */}
+                      <div className="relative h-44 w-full bg-slate-950">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                        <div className="absolute top-3 left-3 bg-purple-950/90 border border-purple-400/50 text-purple-200 text-xs font-mono font-bold px-2.5 py-1 rounded-lg">
+                          {p.code}
+                        </div>
+                        <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-lg border ${
+                          stockBool
+                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                            : 'bg-rose-500/20 text-rose-400 border-rose-500/40'
+                        }`}>
+                          {stockBool ? 'In Stock' : 'Out of Stock'}
+                        </div>
                       </div>
-                      <div className={`absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-lg border ${
-                        p.inStock
-                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                          : 'bg-rose-500/20 text-rose-400 border-rose-500/40'
-                      }`}>
-                        {p.inStock ? 'In Stock' : 'Out of Stock'}
+
+                      {/* Product Info */}
+                      <div className="p-4 space-y-2">
+                        <h3 className="font-bold text-white text-sm line-clamp-2">{p.title}</h3>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-lg font-black text-emerald-400">৳{p.offerPrice}</span>
+                          <span className="text-xs text-slate-500 line-through">৳{p.regularPrice}</span>
+                          <span className="text-[10px] text-amber-400 font-bold bg-amber-400/10 px-1.5 py-0.5 rounded">
+                            অফার প্রাইস
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Product Info */}
-                    <div className="p-4 space-y-2">
-                      <h3 className="font-bold text-white text-sm line-clamp-2">{p.title}</h3>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-black text-emerald-400">৳{p.offerPrice}</span>
-                        <span className="text-xs text-slate-500 line-through">৳{p.regularPrice}</span>
-                        <span className="text-[10px] text-amber-400 font-bold bg-amber-400/10 px-1.5 py-0.5 rounded">
-                          অফার প্রাইস
-                        </span>
-                      </div>
+                    {/* Actions */}
+                    <div className="p-4 pt-0 flex gap-2">
+                      <button
+                        onClick={() => handleToggleStock(p.id, stockBool)}
+                        className={`flex-1 text-xs font-bold py-2 rounded-xl border transition ${
+                          stockBool
+                            ? 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                            : 'bg-emerald-600 text-white border-emerald-500'
+                        }`}
+                      >
+                        {stockBool ? 'স্টক আউট করুন' : 'স্টক ইন করুন'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteProduct(p.id)}
+                        className="p-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition"
+                        title="ডিলেট করুন"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-
-                  {/* Actions */}
-                  <div className="p-4 pt-0 flex gap-2">
-                    <button
-                      onClick={() => handleToggleStock(p.id)}
-                      className={`flex-1 text-xs font-bold py-2 rounded-xl border transition ${
-                        p.inStock
-                          ? 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
-                          : 'bg-emerald-600 text-white border-emerald-500'
-                      }`}
-                    >
-                      {p.inStock ? 'স্টক ইন' : 'স্টক আউট মুক্ত করুন'}
-                    </button>
-                    <button
-                      onClick={() => alert(`প্রোডাক্ট ${p.code} এডিট অপশন শিগগিরই আসছে`)}
-                      className="p-2 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-xl transition"
-                      title="এডিট করুন"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

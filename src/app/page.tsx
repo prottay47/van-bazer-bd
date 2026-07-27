@@ -160,8 +160,21 @@ export default function RiktooStyleLandingPage() {
     });
   };
 
+  const [designList, setDesignList] = useState<ProductDesign[]>(DESIGN_LIST);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.products && data.products.length > 0) {
+          setDesignList(data.products);
+        }
+      })
+      .catch((err) => console.error('Error loading products:', err));
+  }, []);
+
   // Calculate Order Totals
-  const selectedList = DESIGN_LIST.filter((d) => selectedItems[d.id]?.selected);
+  const selectedList = designList.filter((d) => selectedItems[d.id]?.selected);
   const subtotal = selectedList.reduce(
     (sum, d) => sum + d.offerPrice * (selectedItems[d.id]?.quantity || 1),
     0
@@ -361,7 +374,7 @@ export default function RiktooStyleLandingPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {DESIGN_LIST.map((mat) => (
+            {designList.map((mat) => (
               <div
                 key={mat.id}
                 className="bg-gradient-to-b from-[#581c87] to-[#4c1d95] border-2 border-purple-400/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center"
@@ -496,7 +509,7 @@ export default function RiktooStyleLandingPage() {
             
             {/* Design Selection List */}
             <div className="space-y-3">
-              {DESIGN_LIST.map((mat) => {
+              {designList.map((mat) => {
                 const isSelected = !!selectedItems[mat.id]?.selected;
                 const qty = selectedItems[mat.id]?.quantity || 1;
 

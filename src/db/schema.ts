@@ -18,5 +18,19 @@ export const orders = sqliteTable('orders', {
   createdAt: text('created_at').notNull(),
 });
 
+export const products = sqliteTable('products', {
+  id: text('id').primaryKey(),
+  code: text('code').notNull(),
+  title: text('title').notNull(),
+  regularPrice: integer('regular_price').notNull().default(450),
+  offerPrice: integer('offer_price').notNull().default(250),
+  image: text('image').notNull(),
+  inStock: integer('in_stock', { mode: 'number' }).notNull().default(1),
+  createdAt: text('created_at').notNull(),
+});
+
 export type Order = typeof orders.$inferSelect;
 export type NewOrder = typeof orders.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
+
