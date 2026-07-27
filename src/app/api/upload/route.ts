@@ -26,8 +26,8 @@ export async function POST(req: Request) {
       .webp({ quality: 82, effort: 4 })
       .toBuffer();
 
-    // Ensure uploads directory exists in public folder
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    // Ensure uploads directory exists in persistent data folder
+    const uploadDir = path.join(process.cwd(), 'data', 'uploads');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

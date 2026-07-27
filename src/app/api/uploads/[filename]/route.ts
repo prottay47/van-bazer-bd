@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { filename } = params;
     const safeFilename = path.basename(filename);
-    const filePath = path.join(process.cwd(), 'public', 'uploads', safeFilename);
+    const filePath = path.join(process.cwd(), 'data', 'uploads', safeFilename);
 
     if (!fs.existsSync(filePath)) {
       return new NextResponse('File not found', { status: 404 });
