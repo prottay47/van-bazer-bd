@@ -76,6 +76,18 @@ interface Product {
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'incomplete' | 'accounts' | 'settings'>('analytics');
+
+  useEffect(() => {
+    const savedTab = localStorage.getItem('admin_active_tab');
+    if (savedTab && ['analytics', 'products', 'orders', 'incomplete', 'accounts', 'settings'].includes(savedTab)) {
+      setActiveTab(savedTab as any);
+    }
+  }, []);
+
+  const handleTabSelect = (tab: 'analytics' | 'products' | 'orders' | 'incomplete' | 'accounts' | 'settings') => {
+    setActiveTab(tab);
+    localStorage.setItem('admin_active_tab', tab);
+  };
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -381,7 +393,7 @@ export default function AdminDashboardPage() {
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActiveTab(item.id as any);
+                    handleTabSelect(item.id as any);
                     setSidebarOpen(false);
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition ${

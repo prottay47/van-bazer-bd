@@ -115,6 +115,22 @@ export default function RiktooStyleLandingPage() {
     });
   };
 
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.products) {
+          setDesignList(data.products);
+          if (data.products.length > 0) {
+            setSelectedItems({
+              [data.products[0].id]: { selected: true, quantity: 1 },
+            });
+          }
+        }
+      })
+      .catch((err) => console.error('Error fetching products:', err));
+  }, []);
+
 
 
   // Calculate Order Totals
