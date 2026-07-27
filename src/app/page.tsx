@@ -539,52 +539,76 @@ export default function RiktooStyleLandingPage() {
                 return (
                   <div
                     key={mat.id}
-                    className={`bg-green-950/80 border-2 rounded-2xl p-3 transition flex items-center justify-between gap-3 ${
+                    className={`bg-green-950/90 border-2 rounded-2xl p-3 md:p-3.5 transition-all duration-200 flex items-center justify-between gap-3 ${
                       isSelected
-                        ? 'border-emerald-400 shadow-md shadow-emerald-950/50'
-                        : 'border-green-800 opacity-80 hover:opacity-100'
+                        ? 'border-emerald-400 shadow-lg shadow-emerald-950/60 bg-green-900/90'
+                        : 'border-green-800/80 opacity-85 hover:opacity-100 hover:border-green-700'
                     }`}
                   >
-                    {/* Checkbox + Image + Title */}
-                    <div className="flex items-center gap-3">
+                    {/* Left: Checkbox + Image + Title Info */}
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleSelect(mat.id)}
-                        className="w-5 h-5 accent-emerald-500 rounded cursor-pointer"
+                        className="w-5 h-5 accent-emerald-500 rounded cursor-pointer shrink-0"
                       />
 
-                      <img
-                        src={mat.image}
-                        alt={mat.title}
-                        className="w-14 h-14 rounded-xl object-cover border border-green-700"
-                      />
+                      <div className="relative shrink-0">
+                        <img
+                          src={mat.image}
+                          alt={mat.title}
+                          className="w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover border border-green-700/80 shadow-sm"
+                        />
+                        {mat.code && (
+                          <div className="absolute -top-1.5 -left-1.5 bg-rose-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shadow border border-white/20">
+                            {mat.code}
+                          </div>
+                        )}
+                      </div>
 
-                      <div>
-                        <h4 className="text-xs font-bold text-white line-clamp-1">{mat.title}</h4>
-                        <div className="text-xs text-emerald-400 font-extrabold">৳{mat.offerPrice}.00৳</div>
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <h4 className="text-xs md:text-sm font-bold text-white leading-snug break-words">
+                          {mat.title}
+                        </h4>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-xs md:text-sm text-emerald-400 font-black">৳{mat.offerPrice}</span>
+                          {mat.regularPrice > mat.offerPrice && (
+                            <span className="text-[11px] text-green-300/60 line-through">৳{mat.regularPrice}</span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Quantity Counter */}
-                    {isSelected && (
-                      <div className="flex items-center border border-green-600 rounded-xl overflow-hidden bg-green-900 shrink-0">
+                    {/* Right: Quantity Counter */}
+                    {isSelected ? (
+                      <div className="flex items-center gap-1 bg-green-950/90 border border-emerald-500/60 rounded-xl p-1 shrink-0 shadow-inner">
                         <button
                           type="button"
                           onClick={() => updateQuantity(mat.id, -1)}
-                          className="px-2.5 py-1 text-white hover:bg-green-800 transition"
+                          className="w-7 h-7 rounded-lg bg-green-800 hover:bg-green-700 active:scale-95 text-white flex items-center justify-center font-black text-sm transition"
+                          title="পরিমাণ কমান"
                         >
-                          -
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="px-3 text-xs font-extrabold text-white">{qty}</span>
+                        <span className="w-7 text-center text-xs font-black text-white">{qty}</span>
                         <button
                           type="button"
                           onClick={() => updateQuantity(mat.id, 1)}
-                          className="px-2.5 py-1 text-white hover:bg-green-800 transition"
+                          className="w-7 h-7 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white flex items-center justify-center font-black text-sm transition shadow-sm"
+                          title="পরিমাণ বাড়ান"
                         >
-                          +
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => toggleSelect(mat.id)}
+                        className="px-3 py-1.5 text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-500/40 rounded-xl transition shrink-0"
+                      >
+                        সিলেক্ট করুন
+                      </button>
                     )}
                   </div>
                 );
