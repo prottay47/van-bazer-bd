@@ -256,7 +256,7 @@ export default function RiktooStyleLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFBEB] text-[#1F2937] font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
+    <div className="min-h-screen bg-[#0B132B] text-white font-['Hind_Siliguri',sans-serif] pb-24 md:pb-12">
       <style>{`
         @keyframes fadeInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
@@ -279,11 +279,11 @@ export default function RiktooStyleLandingPage() {
 
         @keyframes pulseGlowCall {
           0%, 100% {
-            box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+            box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6);
             transform: scale(1);
           }
           50% {
-            box-shadow: 0 0 0 10px rgba(52, 211, 153, 0);
+            box-shadow: 0 0 0 10px rgba(56, 189, 248, 0);
             transform: scale(1.015);
           }
         }
@@ -337,10 +337,10 @@ export default function RiktooStyleLandingPage() {
         .anim-shimmerLight { animation: shimmerLight 3s infinite; }
         .anim-waBouncePulse { animation: waBouncePulse 2.2s ease-in-out infinite; }
         .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
-        .card-hover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(20,83,45,0.35); }
+        .card-hover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(15,23,42,0.4); }
       `}</style>
       {/* Top Banner Notice */}
-      <div className="bg-[#14532D] text-white text-center py-2.5 px-4 border-b border-green-800 anim-fadeInDown">
+      <div className="bg-[#0F172A] text-white text-center py-2.5 px-4 border-b border-indigo-900 anim-fadeInDown">
         <div className="flex items-center justify-center gap-2 text-base md:text-lg font-bold">
           <Sparkles className="w-5 h-5 text-amber-300 animate-spin shrink-0" />
           <span>🔥 স্পেশাল অফার – মাত্র ২৫০ টাকা!</span>
@@ -353,10 +353,10 @@ export default function RiktooStyleLandingPage() {
       <div className="max-w-xl mx-auto px-3 py-4 space-y-6">
         
         {/* Main Hero Container */}
-        <div className="bg-gradient-to-b from-[#166534] to-[#14532D] rounded-3xl p-5 border-2 border-green-400/40 shadow-2xl space-y-5 text-center anim-fadeInScale">
+        <div className="bg-gradient-to-b from-[#1E1B4B] to-[#0F172A] rounded-3xl p-5 border-2 border-indigo-400/40 shadow-2xl space-y-5 text-center anim-fadeInScale">
           
           {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 bg-green-950/80 border border-green-400/60 text-green-200 text-xs md:text-sm font-semibold px-3 py-1.5 rounded-full">
+          <div className="inline-flex items-center gap-1.5 bg-slate-950/80 border border-indigo-400/60 text-indigo-100 text-xs md:text-sm font-semibold px-3 py-1.5 rounded-full">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>সাইড দিয়ে বর্ডার সেলাই করা 3D ডিজাইনের Floor Mat</span>
           </div>
@@ -367,12 +367,12 @@ export default function RiktooStyleLandingPage() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-green-200 text-sm md:text-base font-semibold -mt-2">
+          <p className="text-indigo-100 text-sm md:text-base font-semibold -mt-2">
             প্রিমিয়াম 3D ডোর ম্যাট — সুন্দর, নিরাপদ ও পরিচ্ছন্ন ঘরের জন্য।
           </p>
 
           {/* Bullet Points */}
-          <div className="bg-green-950/50 p-3.5 rounded-2xl border border-green-500/30 text-left space-y-2 text-sm text-green-100">
+          <div className="bg-slate-950/50 p-3.5 rounded-2xl border border-indigo-500/30 text-left space-y-2 text-sm text-indigo-100">
             {[
               'দ্রুত পানি শোষণ করে',
               'অ্যান্টি-স্লিপ ব্যাকিং',
@@ -389,13 +389,13 @@ export default function RiktooStyleLandingPage() {
 
 
           {/* Pricing Highlight Box */}
-          <div className="bg-[#FBBF24] text-green-950 p-4 rounded-2xl font-extrabold text-sm md:text-base border-2 border-amber-300 space-y-1 relative overflow-hidden anim-offerBoxPulse">
+          <div className="bg-[#FBBF24] text-slate-950 p-4 rounded-2xl font-extrabold text-sm md:text-base border-2 border-amber-300 space-y-1 relative overflow-hidden anim-offerBoxPulse">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent anim-shimmerLight pointer-events-none" />
             <p className="flex items-center justify-center gap-1.5 text-base md:text-lg">
               <span className="animate-bounce">🔥</span>
               <span>মাত্র ৩ দিনের বিশেষ অফার</span>
             </p>
-            <p className="text-lg md:text-2xl text-green-950 font-black">
+            <p className="text-lg md:text-2xl text-slate-950 font-black">
               বর্ডার সেলাই করা মাত্র <span className="text-rose-700 underline underline-offset-4 decoration-2">২৫০ টাকা</span> পিস
             </p>
           </div>
@@ -410,7 +410,7 @@ export default function RiktooStyleLandingPage() {
               { emoji: '🌱', label: 'পরিবেশবান্ধব' },
               { emoji: '🚚', label: 'দ্রুত ডেলিভারি' },
             ].map((badge, i) => (
-              <span key={i} className="bg-green-900/80 border border-green-400/50 text-green-100 text-xs px-2 py-2 rounded-xl font-bold flex flex-col items-center gap-1 text-center hover:scale-105 transition">
+              <span key={i} className="bg-indigo-950/80 border border-indigo-400/50 text-indigo-100 text-xs px-2 py-2 rounded-xl font-bold flex flex-col items-center gap-1 text-center hover:scale-105 transition">
                 <span className="text-xl leading-none">{badge.emoji}</span>
                 {badge.label}
               </span>
@@ -422,16 +422,16 @@ export default function RiktooStyleLandingPage() {
           <div className="space-y-3 pt-2">
             <button
               onClick={() => scrollToCheckout()}
-              className="w-full bg-white hover:bg-slate-100 text-green-950 font-black text-lg md:text-xl py-3.5 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowGold relative overflow-hidden group cursor-pointer"
+              className="w-full bg-white hover:bg-slate-100 text-slate-950 font-black text-lg md:text-xl py-3.5 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowGold relative overflow-hidden group cursor-pointer"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent anim-shimmerLight pointer-events-none" />
-              <ShoppingBag className="w-6 h-6 text-green-700 animate-bounce" />
+              <ShoppingBag className="w-6 h-6 text-indigo-700 animate-bounce" />
               <span>🛒 আজই অর্ডার করুন</span>
             </button>
 
             <a
               href={`tel:${callNumber}`}
-              className="w-full bg-green-950/90 border-2 border-emerald-400 hover:bg-green-900 text-white font-extrabold py-3 px-6 rounded-2xl text-center block text-base shadow-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowCall"
+              className="w-full bg-slate-950/90 border-2 border-emerald-400 hover:bg-indigo-950 text-white font-extrabold py-3 px-6 rounded-2xl text-center block text-base shadow-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2.5 anim-pulseGlowCall"
             >
               <PhoneCall className="w-5 h-5 text-emerald-400 anim-phoneRing shrink-0" />
               <span>📞 অর্ডার করতে কল করুন</span>
@@ -441,8 +441,8 @@ export default function RiktooStyleLandingPage() {
 
         {/* Auto-Sliding Hero Carousel */}
         {designList.length > 0 && (
-          <div className="bg-gradient-to-b from-[#14532D] to-[#15803D] rounded-3xl p-3 border-2 border-green-500/40 shadow-xl overflow-hidden anim-fadeInUp">
-            <div className="relative rounded-2xl overflow-hidden border border-green-400/30 group aspect-[4/3]">
+          <div className="bg-gradient-to-b from-[#0F172A] to-[#1E293B] rounded-3xl p-3 border-2 border-indigo-500/40 shadow-xl overflow-hidden anim-fadeInUp">
+            <div className="relative rounded-2xl overflow-hidden border border-indigo-400/30 group aspect-[4/3]">
               {/* Horizontal Flex Track */}
               <div
                 className="w-full h-full flex transition-transform duration-700 ease-in-out"
@@ -477,7 +477,7 @@ export default function RiktooStyleLandingPage() {
                 ))}
               </div>
               {/* Gradient overlay bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-950/60 to-transparent pointer-events-none z-10" />
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-slate-950/60 to-transparent pointer-events-none z-10" />
             </div>
             {/* Product title below carousel */}
             <div className="text-center mt-2.5 text-white font-bold text-sm px-2 line-clamp-1">
@@ -488,7 +488,7 @@ export default function RiktooStyleLandingPage() {
 
         {/* Product Gallery - "আপনার পছন্দের ডিজাইন গুলো বেছে নিন" */}
         <div className="space-y-4">
-          <div className="bg-green-200/90 text-green-950 text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-green-400 shadow">
+          <div className="bg-[#1E1B4B] text-white text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-indigo-400/60 shadow">
             আপনার পছন্দের ডিজাইন গুলো বেছে নিন
           </div>
 
@@ -496,10 +496,10 @@ export default function RiktooStyleLandingPage() {
             {designList.map((mat, idx) => (
               <div
                 key={mat.id}
-                className="bg-gradient-to-b from-[#14532D] to-[#15803D] border-2 border-green-400/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center card-hover anim-fadeInUp"
+                className="bg-gradient-to-b from-[#0F172A] to-[#1E293B] border-2 border-indigo-400/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center card-hover anim-fadeInUp"
                 style={{ animationDelay: `${idx * 0.08}s` }}
               >
-                <div className="relative rounded-xl overflow-hidden border border-green-400/20">
+                <div className="relative rounded-xl overflow-hidden border border-indigo-400/20">
                   <img
                     src={mat.image}
                     alt={mat.title}
@@ -521,9 +521,9 @@ export default function RiktooStyleLandingPage() {
 
                 <button
                   onClick={() => scrollToCheckout(mat.id)}
-                  className="w-full bg-[#FBBF24] hover:bg-amber-300 text-green-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow anim-pulseGlowGold border border-amber-300"
+                  className="w-full bg-[#FBBF24] hover:bg-amber-300 text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow anim-pulseGlowGold border border-amber-300"
                 >
-                  <ShoppingBag className="w-4 h-4 text-green-950 animate-bounce" />
+                  <ShoppingBag className="w-4 h-4 text-slate-950 animate-bounce" />
                   <span>অর্ডার করুন</span>
                 </button>
               </div>
@@ -533,7 +533,7 @@ export default function RiktooStyleLandingPage() {
 
         {/* Features Cards Section */}
         <div className="space-y-4 pt-4">
-          <div className="bg-green-200/90 text-green-950 text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-green-400 shadow anim-fadeInDown">
+          <div className="bg-[#1E1B4B] text-white text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border-2 border-indigo-400/60 shadow anim-fadeInDown">
             কেন Van Bazer BD-এর প্রিমিয়াম 3D ফ্লোর ম্যাট বেছে নেবেন?
           </div>
 
@@ -547,54 +547,54 @@ export default function RiktooStyleLandingPage() {
             ].map((card, i) => (
               <div
                 key={i}
-                className="bg-white text-[#1F2937] p-4 rounded-2xl shadow-xl border-2 border-green-300 card-hover anim-slideInLeft"
+                className="bg-slate-900/90 text-white p-4 rounded-2xl shadow-xl border-2 border-indigo-500/40 card-hover anim-slideInLeft"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="flex items-center gap-3 mb-1.5">
                   <div
-                    className="w-10 h-10 bg-green-100 text-green-800 rounded-xl flex items-center justify-center shrink-0 font-bold text-xl anim-float"
+                    className="w-10 h-10 bg-indigo-950 text-amber-300 border border-indigo-500/40 rounded-xl flex items-center justify-center shrink-0 font-bold text-xl anim-float"
                     style={{ animationDelay: `${i * 0.3}s` }}
                   >
                     {card.icon}
                   </div>
-                  <h3 className="text-base font-extrabold text-green-950">{card.title}</h3>
+                  <h3 className="text-base font-extrabold text-white">{card.title}</h3>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed pl-1">{card.desc}</p>
+                <p className="text-xs text-indigo-100/90 leading-relaxed pl-1">{card.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Return Policy Highlight Box */}
-        <div className="bg-white border-2 border-rose-500 rounded-3xl p-5 text-slate-900 shadow-xl space-y-2 text-center">
-          <div className="flex items-center justify-center gap-2 text-rose-600 font-extrabold text-base">
+        <div className="bg-slate-900 border-2 border-rose-500/80 rounded-3xl p-5 text-white shadow-xl space-y-2 text-center">
+          <div className="flex items-center justify-center gap-2 text-rose-400 font-extrabold text-base">
             <Truck className="w-6 h-6" />
             <span>Return Policy</span>
           </div>
-          <div className="space-y-1.5 text-xs md:text-sm font-semibold text-slate-800">
-            <div className="flex items-center justify-center gap-1.5 text-emerald-700">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0 font-bold" />
+          <div className="space-y-1.5 text-xs md:text-sm font-semibold text-indigo-100">
+            <div className="flex items-center justify-center gap-1.5 text-emerald-400">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 font-bold" />
               <span>ডেলিভারি ম্যান থাকা অবস্থায় প্রোডাক্ট চেক করতে পারবেন</span>
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-emerald-700">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0 font-bold" />
+            <div className="flex items-center justify-center gap-1.5 text-emerald-400">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 font-bold" />
               <span>পছন্দ না হলে শুধু ডেলিভারি চার্জ দিয়ে সাথে সাথে রিটার্ন করতে পারবেন</span>
             </div>
           </div>
         </div>
 
         {/* Trust Section before Order Form */}
-        <div className="bg-gradient-to-r from-[#14532D] to-[#15803D] border-2 border-emerald-400/60 rounded-3xl p-4 text-white shadow-xl text-center anim-fadeInUp">
+        <div className="bg-gradient-to-r from-[#0F172A] to-[#1E293B] border-2 border-emerald-400/60 rounded-3xl p-4 text-white shadow-xl text-center anim-fadeInUp">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs md:text-sm font-bold text-emerald-100">
-            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+            <div className="flex items-center justify-center gap-2 bg-slate-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
               <span className="text-emerald-400 font-black text-sm">✅</span>
               <span>Cash on Delivery</span>
             </div>
-            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+            <div className="flex items-center justify-center gap-2 bg-slate-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
               <span className="text-emerald-400 font-black text-sm">✅</span>
               <span>সারা বাংলাদেশে ডেলিভারি</span>
             </div>
-            <div className="flex items-center justify-center gap-2 bg-green-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
+            <div className="flex items-center justify-center gap-2 bg-slate-950/80 py-2.5 px-3 rounded-2xl border border-emerald-500/40 shadow-sm">
               <span className="text-emerald-400 font-black text-sm">✅</span>
               <span>অর্ডার কনফার্ম করে পাঠানো হবে</span>
             </div>
@@ -602,9 +602,9 @@ export default function RiktooStyleLandingPage() {
         </div>
 
         {/* Checkout Order Form Section - "কোন কোন ডিজাইন নিবেন এখানে সিলেক্ট করুন" */}
-        <div id="checkout-section" className="bg-[#14532D] border-2 border-green-400 rounded-3xl p-4 md:p-6 shadow-2xl space-y-6">
+        <div id="checkout-section" className="bg-[#0F172A] border-2 border-indigo-400/80 rounded-3xl p-4 md:p-6 shadow-2xl space-y-6">
           
-          <div className="bg-green-200/90 text-green-950 text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border border-green-400 shadow">
+          <div className="bg-[#1E1B4B] text-white text-center py-2.5 px-4 rounded-2xl font-extrabold text-base border border-indigo-400/60 shadow">
             কোন কোন ডিজাইন নিবেন এখানে সিলেক্ট করুন
           </div>
 
@@ -625,10 +625,10 @@ export default function RiktooStyleLandingPage() {
                 return (
                   <div
                     key={mat.id}
-                    className={`bg-green-950/90 border-2 rounded-2xl p-3 md:p-3.5 transition-all duration-200 flex items-center justify-between gap-3 ${
+                    className={`bg-slate-950/90 border-2 rounded-2xl p-3 md:p-3.5 transition-all duration-200 flex items-center justify-between gap-3 ${
                       isSelected
-                        ? 'border-emerald-400 shadow-lg shadow-emerald-950/60 bg-green-900/90'
-                        : 'border-green-800/80 opacity-85 hover:opacity-100 hover:border-green-700'
+                        ? 'border-emerald-400 shadow-lg shadow-emerald-950/60 bg-indigo-950/90'
+                        : 'border-indigo-900/80 opacity-85 hover:opacity-100 hover:border-indigo-700'
                     }`}
                   >
                     {/* Left: Checkbox + Image + Title Info */}
@@ -644,7 +644,7 @@ export default function RiktooStyleLandingPage() {
                         <img
                           src={mat.image}
                           alt={mat.title}
-                          className="w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover border border-green-700/80 shadow-sm"
+                          className="w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover border border-indigo-700/80 shadow-sm"
                         />
                         {mat.code && (
                           <div className="absolute -top-1.5 -left-1.5 bg-rose-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shadow border border-white/20">
@@ -667,11 +667,11 @@ export default function RiktooStyleLandingPage() {
 
                     {/* Right: Quantity Counter */}
                     {isSelected ? (
-                      <div className="flex items-center gap-1 bg-green-950/90 border border-emerald-500/60 rounded-xl p-1 shrink-0 shadow-inner">
+                      <div className="flex items-center gap-1 bg-slate-950/90 border border-emerald-500/60 rounded-xl p-1 shrink-0 shadow-inner">
                         <button
                           type="button"
                           onClick={() => updateQuantity(mat.id, -1)}
-                          className="w-7 h-7 rounded-lg bg-green-800 hover:bg-green-700 active:scale-95 text-white flex items-center justify-center font-black text-sm transition"
+                          className="w-7 h-7 rounded-lg bg-indigo-900 hover:bg-indigo-700 active:scale-95 text-white flex items-center justify-center font-black text-sm transition"
                           title="পরিমাণ কমান"
                         >
                           <Minus className="w-3.5 h-3.5" />
@@ -703,7 +703,7 @@ export default function RiktooStyleLandingPage() {
             {/* Customer Contact Form */}
             <div className="space-y-4 pt-2">
               <div>
-                <label className="block text-xs font-bold text-green-200 mb-1">
+                <label className="block text-xs font-bold text-indigo-100 mb-1">
                   আপনার নাম <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -712,12 +712,12 @@ export default function RiktooStyleLandingPage() {
                   placeholder="যেমন: মোঃ রহিম আহমেদ"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full bg-green-950 border border-green-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-green-400 text-sm outline-none transition"
+                  className="w-full bg-slate-950 border border-indigo-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-indigo-400 text-sm outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-green-200 mb-1">
+                <label className="block text-xs font-bold text-indigo-100 mb-1">
                   মোবাইল নম্বর <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -726,12 +726,12 @@ export default function RiktooStyleLandingPage() {
                   placeholder="যেমন: 017XXXXXXXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-green-950 border border-green-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-green-400 text-sm outline-none transition"
+                  className="w-full bg-slate-950 border border-indigo-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-indigo-400 text-sm outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-green-200 mb-1">
+                <label className="block text-xs font-bold text-indigo-100 mb-1">
                   সম্পূর্ণ ঠিকানা (বাসা/রোড নম্বর, থানা, জেলা) <span className="text-rose-400">*</span>
                 </label>
                 <textarea
@@ -740,13 +740,13 @@ export default function RiktooStyleLandingPage() {
                   placeholder="যেমন: হাউজ #১২, রোড #০৫, ধানমন্ডি, ঢাকা"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full bg-green-950 border border-green-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-green-400 text-sm outline-none transition"
+                  className="w-full bg-slate-950 border border-indigo-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-white placeholder-indigo-400 text-sm outline-none transition"
                 />
               </div>
 
               {/* Delivery Zone Radio Selection */}
               <div>
-                <label className="block text-xs font-bold text-green-200 mb-2">
+                <label className="block text-xs font-bold text-indigo-100 mb-2">
                   ডেলিভারি এরিয়া সিলেক্ট করুন <span className="text-rose-400">*</span>
                 </label>
                 <div className="space-y-2.5">
@@ -754,8 +754,8 @@ export default function RiktooStyleLandingPage() {
                     onClick={() => setDeliveryZone('inside_dhaka')}
                     className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       deliveryZone === 'inside_dhaka'
-                        ? 'bg-green-950 border-emerald-400 text-white shadow-lg'
-                        : 'bg-green-950/60 border-green-800 text-green-300'
+                        ? 'bg-slate-950 border-emerald-400 text-white shadow-lg'
+                        : 'bg-slate-950/60 border-indigo-900 text-indigo-200'
                     }`}
                   >
                     <span className="text-xs md:text-sm font-bold">ঢাকার ভেতরে</span>
@@ -766,8 +766,8 @@ export default function RiktooStyleLandingPage() {
                     onClick={() => setDeliveryZone('sub_dhaka')}
                     className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       deliveryZone === 'sub_dhaka'
-                        ? 'bg-green-950 border-emerald-400 text-white shadow-lg'
-                        : 'bg-green-950/60 border-green-800 text-green-300'
+                        ? 'bg-slate-950 border-emerald-400 text-white shadow-lg'
+                        : 'bg-slate-950/60 border-indigo-900 text-indigo-200'
                     }`}
                   >
                     <span className="text-xs md:text-sm font-bold leading-snug">ঢাকার সাব সিটিতে (গাজীপুর, নারায়ণগঞ্জ, কেরানীগঞ্জ এবং দোহার)</span>
@@ -778,8 +778,8 @@ export default function RiktooStyleLandingPage() {
                     onClick={() => setDeliveryZone('outside_dhaka')}
                     className={`flex items-center justify-between p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       deliveryZone === 'outside_dhaka'
-                        ? 'bg-green-950 border-emerald-400 text-white shadow-lg'
-                        : 'bg-green-950/60 border-green-800 text-green-300'
+                        ? 'bg-slate-950 border-emerald-400 text-white shadow-lg'
+                        : 'bg-slate-950/60 border-indigo-900 text-indigo-200'
                     }`}
                   >
                     <span className="text-xs md:text-sm font-bold">ঢাকার বাইরে</span>
@@ -790,16 +790,16 @@ export default function RiktooStyleLandingPage() {
             </div>
 
             {/* Price Calculations */}
-            <div className="bg-green-950 p-4 rounded-2xl border border-green-700 space-y-2 text-xs">
-              <div className="flex justify-between text-green-300">
+            <div className="bg-slate-950 p-4 rounded-2xl border border-indigo-700 space-y-2 text-xs">
+              <div className="flex justify-between text-indigo-200">
                 <span>সিলেক্ট করা ম্যাট ({selectedList.length} টি ডিজাইন):</span>
                 <span>৳{subtotal}</span>
               </div>
-              <div className="flex justify-between text-green-300">
+              <div className="flex justify-between text-indigo-200">
                 <span>ডেলিভারি চার্জ:</span>
                 <span>৳{deliveryCharge}</span>
               </div>
-              <div className="border-t border-green-800 pt-2 flex justify-between font-extrabold text-base text-white">
+              <div className="border-t border-indigo-900 pt-2 flex justify-between font-extrabold text-base text-white">
                 <span>সর্বমোট (Total):</span>
                 <span className="text-emerald-400">৳{grandTotal}</span>
               </div>
@@ -809,14 +809,14 @@ export default function RiktooStyleLandingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#FBBF24] hover:bg-amber-300 text-green-950 font-black text-lg py-4 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 anim-pulseGlowGold relative overflow-hidden cursor-pointer border-2 border-amber-300"
+              className="w-full bg-[#FBBF24] hover:bg-amber-300 text-slate-950 font-black text-lg py-4 px-6 rounded-2xl shadow-xl transition-all duration-300 transform active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 anim-pulseGlowGold relative overflow-hidden cursor-pointer border-2 border-amber-300"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent anim-shimmerLight pointer-events-none" />
               {loading ? (
                 <span>অর্ডার সাবমিট হচ্ছে...</span>
               ) : (
                 <>
-                  <CheckCircle2 className="w-6 h-6 text-green-950" />
+                  <CheckCircle2 className="w-6 h-6 text-slate-950" />
                   <span>অর্ডার কনফার্ম করুন (৳{grandTotal})</span>
                 </>
               )}
@@ -825,16 +825,16 @@ export default function RiktooStyleLandingPage() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center text-xs text-green-300 pt-4 space-y-2">
+        <footer className="text-center text-xs text-indigo-200 pt-4 space-y-2">
           <p>© 2026 Van Bazer BD - সর্বস্বত্ব সংরক্ষিত।</p>
         </footer>
       </div>
 
       {/* Sticky Mobile Bottom Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#15803D] border-t-2 border-green-400 p-2.5 flex gap-2 z-40 shadow-2xl">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1E293B] border-t-2 border-indigo-400 p-2.5 flex gap-2 z-40 shadow-2xl">
         <a
           href={`tel:${callNumber}`}
-          className="flex-1 bg-green-950 border border-emerald-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 anim-pulseGlowCall"
+          className="flex-1 bg-slate-950 border border-emerald-400 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 anim-pulseGlowCall"
         >
           <PhoneCall className="w-4 h-4 text-emerald-400 anim-phoneRing" />
           <span>অর্ডার করতে কল করুন</span>
@@ -842,37 +842,37 @@ export default function RiktooStyleLandingPage() {
 
         <button
           onClick={() => scrollToCheckout()}
-          className="flex-1 bg-[#FBBF24] text-green-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow anim-pulseGlowGold border border-amber-300"
+          className="flex-1 bg-[#FBBF24] text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow anim-pulseGlowGold border border-amber-300"
         >
-          <ShoppingBag className="w-4 h-4 text-green-950 animate-bounce" />
+          <ShoppingBag className="w-4 h-4 text-slate-950 animate-bounce" />
           <span>আজই অর্ডার করুন</span>
         </button>
       </div>
 
       {/* Order Success Modal */}
       {orderSuccess && (
-        <div className="fixed inset-0 bg-green-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-[#14532D] border-2 border-emerald-400 rounded-3xl p-6 max-w-md w-full text-center space-y-5 shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+          <div className="bg-[#0F172A] border-2 border-emerald-400 rounded-3xl p-6 max-w-md w-full text-center space-y-5 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-400">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
             <div className="space-y-1">
               <h3 className="text-2xl font-extrabold text-white">অর্ডার সফল হয়েছে!</h3>
-              <p className="text-xs text-emerald-300 font-mono bg-green-950/60 py-1 px-3 rounded-full inline-block border border-green-700">
+              <p className="text-xs text-emerald-300 font-mono bg-slate-950/60 py-1 px-3 rounded-full inline-block border border-indigo-700">
                 অর্ডার নম্বর: #{orderSuccess.orderNumber}
               </p>
-              <p className="text-xs text-green-200 pt-2">
+              <p className="text-xs text-indigo-100 pt-2">
                 ধন্যবাদ <strong className="text-white">{orderSuccess.customerName}</strong>! আমাদের টিম আপনার সাথে খুব দ্রুত যোগাযোগ করবে।
               </p>
             </div>
 
-            <div className="bg-green-950 p-4 rounded-2xl border border-green-700 text-left text-xs space-y-2">
-              <div className="flex justify-between text-green-300">
+            <div className="bg-slate-950 p-4 rounded-2xl border border-indigo-700 text-left text-xs space-y-2">
+              <div className="flex justify-between text-indigo-200">
                 <span>মোবাইল:</span>
                 <span className="text-white font-medium">{orderSuccess.phone}</span>
               </div>
-              <div className="flex justify-between text-green-300">
+              <div className="flex justify-between text-indigo-200">
                 <span>সর্বমোট পরিশোধযোগ্য:</span>
                 <span className="text-emerald-400 font-extrabold text-sm">৳{orderSuccess.totalPrice}</span>
               </div>
@@ -885,7 +885,7 @@ export default function RiktooStyleLandingPage() {
                 setPhone('');
                 setAddress('');
               }}
-              className="w-full bg-white hover:bg-slate-100 text-green-950 font-bold py-3 px-4 rounded-xl transition text-sm shadow"
+              className="w-full bg-white hover:bg-slate-100 text-slate-950 font-bold py-3 px-4 rounded-xl transition text-sm shadow"
             >
               বন্ধ করুন
             </button>
