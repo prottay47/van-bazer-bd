@@ -27,7 +27,13 @@ export interface ProductDesign {
   regularPrice: number;
   offerPrice: number;
   image: string;
+  inStock?: boolean | number;
 }
+
+const isProductOutOfStock = (product?: ProductDesign) => {
+  if (!product) return false;
+  return product.inStock === 0 || product.inStock === false;
+};
 
 const DESIGN_LIST: ProductDesign[] = [];
 
@@ -99,6 +105,9 @@ export default function RiktooStyleLandingPage() {
   }, []);
 
   const toggleSelect = (id: string) => {
+    const mat = designList.find((d) => d.id === id);
+    if (mat && isProductOutOfStock(mat)) return;
+
     setSelectedItems((prev) => ({
       ...prev,
       [id]: {
@@ -109,6 +118,9 @@ export default function RiktooStyleLandingPage() {
   };
 
   const updateQuantity = (id: string, delta: number) => {
+    const mat = designList.find((d) => d.id === id);
+    if (mat && isProductOutOfStock(mat)) return;
+
     setSelectedItems((prev) => {
       const current = prev[id] || { selected: true, quantity: 1 };
       const newQty = Math.max(1, current.quantity + delta);
@@ -129,9 +141,16 @@ export default function RiktooStyleLandingPage() {
         if (data.products) {
           setDesignList(data.products);
           if (data.products.length > 0) {
-            setSelectedItems({
-              [data.products[0].id]: { selected: true, quantity: 1 },
-            });
+            const firstInStock = data.products.find(
+              (p: ProductDesign) => p.inStock !== 0 && p.inStock !== false
+            );
+            if (firstInStock) {
+              setSelectedItems({
+                [firstInStock.id]: { selected: true, quantity: 1 },
+              });
+            } else {
+              setSelectedItems({});
+            }
           }
         }
       })
@@ -172,7 +191,9 @@ export default function RiktooStyleLandingPage() {
   }, []);
 
   // Calculate Order Totals
-  const selectedList = designList.filter((d) => selectedItems[d.id]?.selected);
+  const selectedList = designList.filter(
+    (d) => !isProductOutOfStock(d) && selectedItems[d.id]?.selected
+  );
   const subtotal = selectedList.reduce(
     (sum, d) => sum + d.offerPrice * (selectedItems[d.id]?.quantity || 1),
     0
@@ -182,10 +203,13 @@ export default function RiktooStyleLandingPage() {
 
   const scrollToCheckout = (designId?: string) => {
     if (designId) {
-      setSelectedItems((prev) => ({
-        ...prev,
-        [designId]: { selected: true, quantity: prev[designId]?.quantity || 1 },
-      }));
+      const mat = designList.find((d) => d.id === designId);
+      if (mat && !isProductOutOfStock(mat)) {
+        setSelectedItems((prev) => ({
+          ...prev,
+          [designId]: { selected: true, quantity: prev[designId]?.quantity || 1 },
+        }));
+      }
     }
     const elem = document.getElementById('checkout-section');
     if (elem) {
@@ -479,20 +503,28 @@ export default function RiktooStyleLandingPage() {
                 className="w-full h-full flex transition-transform duration-700 ease-in-out"
                 style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
               >
-                {designList.map((item) => (
-                  <div key={item.id} className="w-full h-full shrink-0 relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.image}
-                      alt={item.code}
-                      className="w-full h-full object-cover"
-                    />
-                    {/* Code badge – top left */}
-                    <div className="absolute top-3 left-3 bg-rose-600 text-white font-extrabold text-sm px-3 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm z-10">
-                      {item.code}
+                {designList.map((item) => {
+                  const outOfStock = isProductOutOfStock(item);
+                  return (
+                    <div key={item.id} className="w-full h-full shrink-0 relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.image}
+                        alt={item.code}
+                        className={`w-full h-full object-cover ${outOfStock ? 'opacity-70 grayscale-[25%]' : ''}`}
+                      />
+                      {/* Code badge – top left */}
+                      <div className="absolute top-3 left-3 bg-rose-600 text-white font-extrabold text-sm px-3 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm z-10">
+                        {item.code}
+                      </div>
+                      {outOfStock && (
+                        <div className="absolute top-3 right-3 bg-rose-600/90 text-white font-extrabold text-xs px-2.5 py-1 rounded-xl shadow-lg border border-white/20 backdrop-blur-sm z-10">
+                          স্টক আউট
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Dot indicators */}
@@ -524,41 +556,62 @@ export default function RiktooStyleLandingPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {designList.map((mat, idx) => (
-              <div
-                key={mat.id}
-                className="bg-[#111827] border-2 border-[#334155] rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center card-hover anim-fadeInUp"
-                style={{ animationDelay: `${idx * 0.08}s` }}
-              >
-                <div className="relative rounded-xl overflow-hidden border border-[#334155]/20">
-                  <img
-                    src={mat.image}
-                    alt={mat.title}
-                    className="w-full aspect-[4/3] object-cover transition-transform duration-500 hover:scale-105"
-                  />
-                  <div className="absolute top-2 left-2 bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg shadow">
-                    {mat.code}
-                  </div>
-                </div>
-
-                <div className="space-y-1 py-0.5">
-                  <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 leading-tight">{mat.title}</h3>
-                  <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                    <span className="text-xs md:text-sm text-red-400 font-extrabold line-through decoration-red-500 decoration-2">৳{mat.regularPrice}</span>
-                    <span className="text-xs font-bold text-amber-200">এখন মাত্র</span>
-                    <span className="text-base md:text-xl font-black text-[#FBBF24] drop-shadow-md">৳{mat.offerPrice}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => scrollToCheckout(mat.id)}
-                  className="w-full bg-[#FBBF24] hover:bg-amber-300 text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow anim-pulseGlowGold border border-amber-300"
+            {designList.map((mat, idx) => {
+              const outOfStock = isProductOutOfStock(mat);
+              return (
+                <div
+                  key={mat.id}
+                  className={`bg-[#111827] border-2 rounded-2xl p-2.5 flex flex-col justify-between shadow-lg space-y-2 text-center card-hover anim-fadeInUp ${
+                    outOfStock ? 'border-rose-900/50 opacity-80' : 'border-[#334155]'
+                  }`}
+                  style={{ animationDelay: `${idx * 0.08}s` }}
                 >
-                  <ShoppingBag className="w-4 h-4 text-slate-950 animate-bounce" />
-                  <span>অর্ডার করুন</span>
-                </button>
-              </div>
-            ))}
+                  <div className="relative rounded-xl overflow-hidden border border-[#334155]/20">
+                    <img
+                      src={mat.image}
+                      alt={mat.title}
+                      className={`w-full aspect-[4/3] object-cover transition-transform duration-500 hover:scale-105 ${
+                        outOfStock ? 'grayscale-[25%] opacity-80' : ''
+                      }`}
+                    />
+                    <div className="absolute top-2 left-2 bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded-lg shadow">
+                      {mat.code}
+                    </div>
+                    {outOfStock && (
+                      <div className="absolute top-2 right-2 bg-rose-600 text-white text-xs font-extrabold px-2 py-0.5 rounded-lg shadow border border-rose-400/40">
+                        স্টক আউট
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-1 py-0.5">
+                    <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 leading-tight">{mat.title}</h3>
+                    <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                      <span className="text-xs md:text-sm text-red-400 font-extrabold line-through decoration-red-500 decoration-2">৳{mat.regularPrice}</span>
+                      <span className="text-xs font-bold text-amber-200">এখন মাত্র</span>
+                      <span className="text-base md:text-xl font-black text-[#FBBF24] drop-shadow-md">৳{mat.offerPrice}</span>
+                    </div>
+                  </div>
+
+                  {outOfStock ? (
+                    <button
+                      disabled
+                      className="w-full bg-slate-800 text-slate-400 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-not-allowed border border-slate-700 opacity-80"
+                    >
+                      <span>স্টক আউট</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => scrollToCheckout(mat.id)}
+                      className="w-full bg-[#FBBF24] hover:bg-amber-300 text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow anim-pulseGlowGold border border-amber-300 cursor-pointer"
+                    >
+                      <ShoppingBag className="w-4 h-4 text-slate-950 animate-bounce" />
+                      <span>অর্ডার করুন</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -650,14 +703,17 @@ export default function RiktooStyleLandingPage() {
             {/* Design Selection List */}
             <div className="space-y-3">
               {designList.map((mat) => {
-                const isSelected = !!selectedItems[mat.id]?.selected;
+                const outOfStock = isProductOutOfStock(mat);
+                const isSelected = !outOfStock && !!selectedItems[mat.id]?.selected;
                 const qty = selectedItems[mat.id]?.quantity || 1;
 
                 return (
                   <div
                     key={mat.id}
                     className={`bg-[#0F172A] border-2 rounded-2xl p-3 md:p-3.5 transition-all duration-200 flex items-center justify-between gap-3 ${
-                      isSelected
+                      outOfStock
+                        ? 'border-rose-900/40 opacity-60 bg-slate-950/60'
+                        : isSelected
                         ? 'border-[#10B981] shadow-lg shadow-emerald-950/60 bg-indigo-950/90'
                         : 'border-[#334155] opacity-85 hover:opacity-100 hover:border-[#334155]'
                     }`}
@@ -667,15 +723,20 @@ export default function RiktooStyleLandingPage() {
                       <input
                         type="checkbox"
                         checked={isSelected}
+                        disabled={outOfStock}
                         onChange={() => toggleSelect(mat.id)}
-                        className="w-5 h-5 accent-[#10B981] rounded cursor-pointer shrink-0"
+                        className={`w-5 h-5 accent-[#10B981] rounded shrink-0 ${
+                          outOfStock ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                        }`}
                       />
 
                       <div className="relative shrink-0">
                         <img
                           src={mat.image}
                           alt={mat.title}
-                          className="w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover border border-[#334155] shadow-sm"
+                          className={`w-14 h-14 md:w-16 md:h-16 rounded-xl object-cover border border-[#334155] shadow-sm ${
+                            outOfStock ? 'grayscale-[30%]' : ''
+                          }`}
                         />
                         {mat.code && (
                           <div className="absolute -top-1.5 -left-1.5 bg-rose-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shadow border border-white/20">
@@ -685,9 +746,16 @@ export default function RiktooStyleLandingPage() {
                       </div>
 
                       <div className="min-w-0 flex-1 space-y-0.5">
-                        <h4 className="text-xs md:text-sm font-bold text-white leading-snug break-words">
-                          {mat.title}
-                        </h4>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="text-xs md:text-sm font-bold text-white leading-snug break-words">
+                            {mat.title}
+                          </h4>
+                          {outOfStock && (
+                            <span className="bg-rose-500/20 text-rose-400 border border-rose-500/40 text-[10px] font-extrabold px-1.5 py-0.5 rounded-md shrink-0">
+                              স্টক আউট
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-baseline gap-1.5 flex-wrap">
                           <span className="text-xs md:text-sm text-red-400 font-extrabold line-through decoration-red-500 decoration-2">৳{mat.regularPrice}</span>
                           <span className="text-xs font-bold text-amber-200">এখন মাত্র</span>
@@ -696,8 +764,12 @@ export default function RiktooStyleLandingPage() {
                       </div>
                     </div>
 
-                    {/* Right: Quantity Counter */}
-                    {isSelected ? (
+                    {/* Right: Quantity Counter / Out of Stock Label */}
+                    {outOfStock ? (
+                      <span className="px-3 py-1.5 text-xs font-bold text-rose-400 bg-rose-950/60 border border-rose-800/60 rounded-xl shrink-0">
+                        স্টক আউট
+                      </span>
+                    ) : isSelected ? (
                       <div className="flex items-center gap-1 bg-[#0F172A] border border-[#10B981] rounded-xl p-1 shrink-0 shadow-inner">
                         <button
                           type="button"
