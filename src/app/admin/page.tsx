@@ -1162,7 +1162,17 @@ export default function AdminDashboardPage() {
                         : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
                     }`}
                   >
-                    {st === 'All' ? 'সকল অর্ডার' : st}
+                    {st === 'All'
+                      ? 'সকল অর্ডার'
+                      : st === 'Pending'
+                      ? 'অপেক্ষমাণ'
+                      : st === 'Confirmed'
+                      ? 'কনফার্ম'
+                      : st === 'Shipped'
+                      ? 'পাঠানো হয়েছে'
+                      : st === 'Cancelled'
+                      ? 'বাতিল'
+                      : st}
                   </button>
                 ))}
               </div>
@@ -1202,11 +1212,11 @@ export default function AdminDashboardPage() {
                             : 'text-rose-400 border-rose-500/50'
                         }`}
                       >
-                        <option value="Pending">Pending</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Incomplete">Incomplete</option>
+                        <option value="Pending">অপেক্ষমাণ</option>
+                        <option value="Confirmed">কনফার্ম</option>
+                        <option value="Shipped">পাঠানো হয়েছে</option>
+                        <option value="Cancelled">বাতিল</option>
+                        <option value="Incomplete">অসম্পূর্ণ</option>
                       </select>
                     </div>
 
@@ -1411,10 +1421,11 @@ export default function AdminDashboardPage() {
                                   : 'text-rose-400 border-rose-500/40'
                               }`}
                             >
-                              <option value="Pending">Pending</option>
-                              <option value="Confirmed">Confirmed</option>
-                              <option value="Shipped">Shipped</option>
-                              <option value="Cancelled">Cancelled</option>
+                              <option value="Pending">অপেক্ষমাণ</option>
+                              <option value="Confirmed">কনফার্ম</option>
+                              <option value="Shipped">পাঠানো হয়েছে</option>
+                              <option value="Cancelled">বাতিল</option>
+                              <option value="Incomplete">অসম্পূর্ণ</option>
                             </select>
                           </td>
 
