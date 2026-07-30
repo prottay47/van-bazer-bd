@@ -1,7 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -13,7 +13,22 @@ declare global {
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1920778405466258'; // Fallback ID if not provided
 
 export default function MetaPixel() {
-  const pixelId = META_PIXEL_ID;
+  const [pixelId, setPixelId] = useState(META_PIXEL_ID);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.pixelId && data.pixelId !== '123456789012345') {
+          setPixelId(data.pixelId);
+          if (typeof window !== 'undefined' && window.fbq) {
+            window.fbq('init', data.pixelId);
+            window.fbq('track', 'PageView');
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <>

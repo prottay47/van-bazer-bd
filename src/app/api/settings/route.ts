@@ -20,7 +20,11 @@ function getSettings() {
   try {
     if (fs.existsSync(SETTINGS_FILE)) {
       const data = fs.readFileSync(SETTINGS_FILE, 'utf-8');
-      return { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
+      const parsed = JSON.parse(data);
+      if (!parsed.pixelId || parsed.pixelId === '123456789012345') {
+        parsed.pixelId = '1920778405466258';
+      }
+      return { ...DEFAULT_SETTINGS, ...parsed };
     }
   } catch (e) {
     console.error('Error reading settings.json:', e);
