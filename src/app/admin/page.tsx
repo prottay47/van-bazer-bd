@@ -1750,6 +1750,23 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
+              <div className="space-y-3 pt-4 border-t border-slate-800">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <span className="text-blue-400">📊</span>
+                  <span>Meta (Facebook) Pixel ID</span>
+                </h3>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1 font-semibold">Meta Pixel ID</label>
+                  <input
+                    type="text"
+                    value={pixelId}
+                    onChange={(e) => setPixelId(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-blue-500 font-mono font-bold text-blue-400"
+                    placeholder="যেমন: 1920778405466258"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">Facebook Ads থেকে ওয়েবসাইটের ট্র্যাকিং ও কনভার্সন পরিমাপ করতে Meta Pixel ID ব্যবহার হয়</p>
+                </div>
+              </div>
 
               <div className="pt-4 border-t border-slate-800 flex justify-end">
                 <button
