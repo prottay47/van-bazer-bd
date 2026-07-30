@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
   const [dhakaDelivery, setDhakaDelivery] = useState(70);
   const [subDhakaDelivery, setSubDhakaDelivery] = useState(100);
   const [outsideDelivery, setOutsideDelivery] = useState(130);
-  const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345');
+  const [pixelId, setPixelId] = useState(process.env.NEXT_PUBLIC_META_PIXEL_ID || '1920778405466258');
   const [phoneNumber, setPhoneNumber] = useState('01797-939935');
   const [whatsappNumber, setWhatsappNumber] = useState('01797-939935');
   const [boostDollar, setBoostDollar] = useState<number>(0);

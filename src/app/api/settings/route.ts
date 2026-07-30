@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS = {
   dhakaDelivery: 70,
   subDhakaDelivery: 100,
   outsideDelivery: 130,
-  pixelId: '123456789012345',
+  pixelId: '1920778405466258',
   phoneNumber: '01797-939935',
   whatsappNumber: '01797-939935',
   boostDollar: 0,

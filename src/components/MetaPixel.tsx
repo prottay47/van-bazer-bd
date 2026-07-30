@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '123456789012345'; // Fallback demo ID if not provided
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1920778405466258'; // Fallback ID if not provided
 
 export default function MetaPixel() {
   const pixelId = META_PIXEL_ID;
