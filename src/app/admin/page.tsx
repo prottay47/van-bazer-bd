@@ -1048,7 +1048,7 @@ export default function AdminDashboardPage() {
                       {/* Product Image */}
                       <div className="relative h-44 w-full bg-slate-950">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                        <img src={p.image} alt={p.title} width={400} height={176} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                         <div className="absolute top-3 left-3 bg-purple-950/90 border border-purple-400/50 text-purple-200 text-xs font-mono font-bold px-2.5 py-1 rounded-lg">
                           {p.code}
                         </div>

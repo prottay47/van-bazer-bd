@@ -21,9 +21,16 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Convert image to WebP format using Sharp
+    // Resize (max 1000px) + convert to WebP — বড় ছবি ছোট করে দেয়, দেখতে একই থাকে
     const webpBuffer = await sharp(buffer)
-      .webp({ quality: 82, effort: 4 })
+      .rotate()
+      .resize({
+        width: 1000,
+        height: 1000,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 78, effort: 5 })
       .toBuffer();
 
     // Ensure uploads directory exists in persistent data folder
